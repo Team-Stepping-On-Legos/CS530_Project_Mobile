@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GetStarted extends StatefulWidget {
@@ -8,7 +9,10 @@ class GetStarted extends StatefulWidget {
   _GetStartedState createState() => _GetStartedState();
 }
 
+
 class _GetStartedState extends State<GetStarted> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     final color = Colors.white;
@@ -81,7 +85,9 @@ class _GetStartedState extends State<GetStarted> {
                   ),
                   Center(
                       child: TextButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      signInAnonymously();
+                    },
                     child: Text(
                       "Get Started".toUpperCase(),
                       style: TextStyle(
@@ -94,5 +100,14 @@ class _GetStartedState extends State<GetStarted> {
                 ],
               ),
             )));
+  }
+
+  void signInAnonymously() {
+    _auth.signInAnonymously().then((result) {
+      setState(() {
+        final User? user = result.user;
+        print(user.toString());
+      });
+    });
   }
 }

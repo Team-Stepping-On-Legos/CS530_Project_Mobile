@@ -8,12 +8,17 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('VOLUNTARY SPAM'),    
+        title: const Text('VOLUNTARY SPAM APP'),    
       ), // This trailing comma makes auto-formatting nicer for build methods.
-      body: Column(      
-        children: const [
-
-        ],
+      body: Center(
+        child: Column(  
+          mainAxisAlignment: MainAxisAlignment.center,    
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Text('HOME PAGE\nCOMING SOON',style: TextStyle(fontSize: 25),
+            textAlign: TextAlign.center,),
+          ],
+        ),
       ),
     );
   }

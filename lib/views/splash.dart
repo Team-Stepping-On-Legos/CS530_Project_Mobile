@@ -16,13 +16,15 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
         const Duration(seconds: 4),
-        () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => (const GetStarted()))));
+        () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (BuildContext context) {
+               return const GetStarted();
+            })));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(    
+    return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
@@ -33,20 +35,20 @@ class _SplashScreenState extends State<SplashScreen> {
               'VOLUNTARY SPAM',
               style: TextStyle(fontSize: 40),
               textAlign: TextAlign.center,
-              ),
-            const SizedBox(height: 10,),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             const Text(
               'APP',
               style: TextStyle(fontSize: 40),
               textAlign: TextAlign.center,
-              ),
-            const SizedBox(height: 45,),
-            Lottie.asset(
-              'assets/subscriber.json',
-              repeat: false,
-              reverse: false,
-              animate: true
-              ),
+            ),
+            const SizedBox(
+              height: 45,
+            ),
+            Lottie.asset('assets/subscriber.json',
+                repeat: false, reverse: false, animate: true),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cs530_mobile/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -9,16 +10,15 @@ class GetStarted extends StatefulWidget {
   _GetStartedState createState() => _GetStartedState();
 }
 
-
 class _GetStartedState extends State<GetStarted> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  var _user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.white;
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
+    const color = Colors.white;
+    return _user == null
+        ? Scaffold(
             backgroundColor: const Color(0xFF8185E2),
             body: Center(
               child: Column(
@@ -44,7 +44,7 @@ class _GetStartedState extends State<GetStarted> {
                           radius: 50.0,
                         )),
                   ),
-                  Center(
+                  const Center(
                     child: Text(
                       "Hello!",
                       style: TextStyle(
@@ -53,7 +53,7 @@ class _GetStartedState extends State<GetStarted> {
                           color: color),
                     ),
                   ),
-                  Center(
+                  const Center(
                     child: Text(
                       "Welcome to Voluntary Spam",
                       style: TextStyle(
@@ -65,13 +65,13 @@ class _GetStartedState extends State<GetStarted> {
                   const SizedBox(
                     height: 30.0,
                   ),
-                  Center(
+                  const Center(
                     child: Text(
                       "We noticed",
                       style: TextStyle(fontSize: 20.0, color: color),
                     ),
                   ),
-                  Center(
+                  const Center(
                     child: Text(
                       "It is your first time here",
                       style: TextStyle(fontSize: 20.0, color: color),
@@ -90,7 +90,7 @@ class _GetStartedState extends State<GetStarted> {
                     },
                     child: Text(
                       "Get Started".toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
@@ -99,14 +99,14 @@ class _GetStartedState extends State<GetStarted> {
                   )),
                 ],
               ),
-            )));
+            ))
+        : const HomeScreen();
   }
 
   void signInAnonymously() {
     _auth.signInAnonymously().then((result) {
       setState(() {
-        final User? user = result.user;
-        print(user.toString());
+        _user = result.user;
       });
     });
   }

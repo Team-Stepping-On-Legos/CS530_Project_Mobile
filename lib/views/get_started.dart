@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class _GetStartedState extends State<GetStarted> {
                       "Welcome to Voluntary Spam",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 35.0,
+                          fontSize: 25.0,
                           color: color),
                     ),
                   ),
@@ -85,7 +86,8 @@ class _GetStartedState extends State<GetStarted> {
                   ),
                   Center(
                       child: TextButton(
-                    onPressed: () async {
+                    onPressed: () async {                      
+                      await writeContent([]);
                       signInAnonymously();
                     },
                     child: Text(

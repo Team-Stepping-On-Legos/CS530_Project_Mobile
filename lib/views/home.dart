@@ -99,12 +99,15 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: Colors.deepPurple,
+            // color: Colors.deepPurple,
+            decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/bg.jpg"), fit: BoxFit.fill)),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 60,
                   ),
                   Lottie.asset('assets/subscriber.json',

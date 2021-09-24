@@ -84,17 +84,43 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.indigoAccent[100],
-      appBar: AppBar(
-        title: const Text('VOLUNTARY SPAM APP'),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      backgroundColor: Colors.blueAccent[50],     
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 30,
+          Container(
+            color: Colors.deepPurple,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(height: 60,),
+                        Lottie.asset('assets/subscriber.json',
+                            repeat: true,
+                            reverse: true,
+                            animate: true,
+                            height: 150,
+                            width: 150),
+                        const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Text(
+                            'VOLUNTARY SPAM\nAPP',
+                            style: TextStyle(
+                                fontSize: 32,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+            height: 310,
           ),
+          const SizedBox(
+              height: 20,
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,

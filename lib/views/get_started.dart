@@ -3,6 +3,7 @@ import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _GetStartedState extends State<GetStarted> {
     const color = Colors.white;
     return _user == null
         ? Scaffold(
-            backgroundColor: const Color(0xFF8185E2),
+            backgroundColor: Colors.deepPurple,
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -37,11 +38,12 @@ class _GetStartedState extends State<GetStarted> {
                         shape: const CircleBorder(),
                         child: CircleAvatar(
                           backgroundColor: Colors.grey[100],
-                          child: const Icon(
-                            Icons.calendar_today_outlined,
-                            size: 50.0,
-                            color: Color(0xFF8185E2),
-                          ),
+                          child: Lottie.asset('assets/subscriber.json',
+                            repeat: true,
+                            reverse: true,
+                            animate: true,
+                            height: 150,
+                            width: 150),
                           radius: 50.0,
                         )),
                   ),

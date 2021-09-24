@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  initState(){
+  initState() {
     super.initState();
     _getSavedCategories();
     _getCategories();
@@ -33,20 +33,20 @@ class _HomeScreenState extends State<HomeScreen> {
     API.getCategories().then((response) {
       setState(() {
         Iterable list = json.decode(response.body);
-        categoryList = list.map((model) => Category.fromJson(model)).toList();       
-      });
-    });    
-  }
-
-  _getSavedCategories(){    
-      readContent().then((String value) {
-      setState(() {       
-      readCategoryList = jsonDecode(value);      
+        categoryList = list.map((model) => Category.fromJson(model)).toList();
       });
     });
   }
 
-  _showDialog() {
+  _getSavedCategories() {
+    readContent().then((String value) {
+      setState(() {
+        readCategoryList = jsonDecode(value);
+      });
+    });
+  }
+
+  _showDialogCategories() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -54,15 +54,24 @@ class _HomeScreenState extends State<HomeScreen> {
           //Here we will build the content of the dialog
           return AlertDialog(
             title: const Text("CATEGORIES"),
-            content: MultiSelectChip(
-              categoryList,
-              readCategoryList,
-              onSelectionChanged: (selectedList) {
-                setState(() {
-                  selectedCategoryList = selectedList;
-                });
-              },
-            ),
+            content: categoryList.isNotEmpty
+                ? MultiSelectChip(
+                    categoryList,
+                    readCategoryList,
+                    onSelectionChanged: (selectedList) {
+                      setState(() {
+                        selectedCategoryList = selectedList;
+                      });
+                    },
+                  )
+                : Lottie.asset(
+                    'assets/404.json',
+                    repeat: true,
+                    reverse: true,
+                    animate: true,
+                    height: 150,
+                    width: 150,
+                  ),
             actions: <Widget>[
               TextButton(
                 child: const Text("SUBSCRIBE"),
@@ -84,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent[50],     
+      backgroundColor: Colors.blueAccent[50],
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,40 +103,42 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(height: 60,),
-                        Lottie.asset('assets/subscriber.json',
-                            repeat: true,
-                            reverse: true,
-                            animate: true,
-                            height: 150,
-                            width: 150),
-                        const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text(
-                            'VOLUNTARY SPAM\nAPP',
-                            style: TextStyle(
-                                fontSize: 32,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
+                children: [
+                  SizedBox(
+                    height: 60,
+                  ),
+                  Lottie.asset('assets/subscriber.json',
+                      repeat: true,
+                      reverse: true,
+                      animate: true,
+                      height: 150,
+                      width: 150),
+                  const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Text(
+                      'VOLUNTARY SPAM\nAPP',
+                      style: TextStyle(
+                          fontSize: 32,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
                     ),
+                  ),
+                ],
+              ),
             ),
             height: 310,
           ),
           const SizedBox(
-              height: 20,
-            ),
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: () {
-                  _showDialog();
+                  _showDialogCategories();
                 },
                 child: Card(
                   color: Colors.white,
@@ -148,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'GET\nNOTIFIED',
                           style: TextStyle(
                             fontSize: 15,
-                            color: Colors.indigo,
+                            color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -165,10 +176,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("EVENTS"),
-                          content: const Text('PARTY'),
+                          content: Lottie.asset(
+                            'assets/404.json',
+                            repeat: true,
+                            reverse: true,
+                            animate: true,
+                            height: 150,
+                            width: 150,
+                          ),
                           actions: [
                             TextButton(
-                              child: const Text("Ok"),
+                              child: const Text("OK"),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -194,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'UPCOMING\nEVENTS',
                           style: TextStyle(
                               fontSize: 15,
-                              color: Colors.indigo,
+                              color: Colors.deepPurple,
                               fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -230,16 +248,16 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
         padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
           label: Text(item.name),
-          selected: selectedChoices.contains(item.name),        
+          selected: selectedChoices.contains(item.name),
           onSelected: (selected) {
             setState(() {
-              if(selectedChoices.contains(item.name)){
-                  selectedChoices.remove(item.name);
-                  widget.readCategoryList.remove(item.name);
-              }else{
+              if (selectedChoices.contains(item.name)) {
+                selectedChoices.remove(item.name);
+                widget.readCategoryList.remove(item.name);
+              } else {
                 selectedChoices.add(item.name);
                 widget.readCategoryList.add(item.name);
-              }                                  
+              }
               widget.onSelectionChanged(selectedChoices);
             });
           },
@@ -248,20 +266,19 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
     }
     return choices;
   }
+
   @override
-  void initState() {    
+  void initState() {
     super.initState();
-    if(widget.readCategoryList.isNotEmpty){
-    for (var item in widget.readCategoryList) {
-      selectedChoices.add(item.toString());
+    if (widget.readCategoryList.isNotEmpty) {
+      for (var item in widget.readCategoryList) {
+        selectedChoices.add(item.toString());
+      }
     }
-    }
-    
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Wrap(
       children: _buildChoiceList(),
     );

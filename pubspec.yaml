@@ -60,6 +60,7 @@ flutter:
     - assets/marking_calendar.json
     - assets/bg.jpg
     - assets/bg_land.jpg
+    - assets/404.json
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       Lottie.asset(
-                        'assets/coordinator.json',
+                        'assets/get_notified.json',
                         repeat: true,
                         reverse: true,
                         animate: true,

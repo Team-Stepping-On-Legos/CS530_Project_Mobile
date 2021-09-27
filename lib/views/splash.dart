@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cs530_mobile/views/get_started.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,6 +15,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
     Timer(
         const Duration(seconds: 4),
         () => Navigator.of(context).pushReplacement(

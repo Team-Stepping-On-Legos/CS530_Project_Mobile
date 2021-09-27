@@ -3,6 +3,8 @@ import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/Category.dart';
+import 'package:cs530_mobile/widgets/home_card.dart';
+import 'package:cs530_mobile/widgets/home_top_view.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -94,143 +96,62 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueAccent[50],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            // color: Colors.deepPurple,
-            decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/bg.jpg"), fit: BoxFit.fill)),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  Lottie.asset('assets/subscriber.json',
-                      repeat: true,
-                      reverse: true,
-                      animate: true,
-                      height: 150,
-                      width: 150),
-                  const Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text(
-                      'VOLUNTARY SPAM\nAPP',
-                      style: TextStyle(
-                          fontSize: 32,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const HomeTopViewWidget(),
+            const SizedBox(
+              height: 20,
             ),
-            height: 310,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  _showDialogCategories();
-                },
-                child: Card(
-                  color: Colors.white,
-                  elevation: 40,
-                  child: Column(
-                    children: [
-                      Lottie.asset(
-                        'assets/get_notified.json',
-                        repeat: true,
-                        reverse: true,
-                        animate: true,
-                        height: 150,
-                        width: 150,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'GET\nNOTIFIED',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.deepPurple,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _showDialogCategories();
+                  },
+                  child: const HomeCardWidget(assetName: 'get_notified',name: 'GET\nNOTIFIED'),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("EVENTS"),
-                          content: Lottie.asset(
-                            'assets/404.json',
-                            repeat: true,
-                            reverse: true,
-                            animate: true,
-                            height: 150,
-                            width: 150,
-                          ),
-                          actions: [
-                            TextButton(
-                              child: const Text("OK"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        );
-                      });
-                },
-                child: Card(
-                  color: Colors.white,
-                  elevation: 40,
-                  child: Column(
-                    children: [
-                      Lottie.asset('assets/marking_calendar.json',
-                          repeat: true,
-                          reverse: true,
-                          animate: true,
-                          height: 150,
-                          width: 150),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'UPCOMING\nEVENTS',
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("EVENTS"),
+                            content: Lottie.asset(
+                              'assets/404.json',
+                              repeat: true,
+                              reverse: true,
+                              animate: true,
+                              height: 150,
+                              width: 150,
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text("OK"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  },
+                  child: const HomeCardWidget(assetName: 'marking_calendar',name: 'UPCOMING\nEVENTS'),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class MultiSelectChip extends StatefulWidget {
   final List<Category> categoryList;

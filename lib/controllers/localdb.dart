@@ -8,28 +8,55 @@ Future<String> get _localPath async {
     return directory.path;
   }
 
-  Future<File> get _localFile async {
+  Future<File> get _categoriesFile async {
     final path = await _localPath;
     return File('$path/categories.txt');
   }
 
+  Future<File> get _eventsFile async {
+    final path = await _localPath;
+    return File('$path/events.txt');
+  }
 
-  Future<String> readContent() async {
+
+  Future<String> readContent(String fileName) async {
+    final File file;
     try {
-      final file = await _localFile;
-      // Read the file
+      switch (fileName.toLowerCase()) {
+        case "categories":
+          file = await _categoriesFile;
+          break;
+        case "events":
+          file = await _eventsFile;            
+          break;
+        default:
+          file = await _categoriesFile;
+          break;
+      }
       String contents = await file.readAsString();
       print(contents);
       // Returning the contents of the file
-      return contents;
+      return contents;    
+      
     } catch (e) {
       // If encountering an error, return
       return 'Error!';
     }
   }
 
-  Future<File> writeContent(List<String> categories) async {
-    final file = await _localFile;
+  Future<File> writeContent(String fileName, List<String> categories) async {    
+    final File file;
+    switch (fileName.toLowerCase()) {
+      case "categories":
+        file = await _categoriesFile;
+        break;
+      case "events":
+        file = await _eventsFile;            
+        break;
+      default:
+        file = await _categoriesFile;
+        break;
+    }
     String jsonCategories = jsonEncode(categories);
     // Write the file
     return file.writeAsString(jsonCategories);

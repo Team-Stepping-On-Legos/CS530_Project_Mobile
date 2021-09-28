@@ -3,6 +3,7 @@ import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/Category.dart';
+import 'package:cs530_mobile/views/calendar.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
 import 'package:cs530_mobile/widgets/home_top_view.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _getSavedCategories() {
-    readContent().then((String value) {
+    readContent("categories").then((String value) {
       setState(() {
         readCategoryList = jsonDecode(value);
       });
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fbm.unSubscribeTopic(item.name);
                   }
                   fbm.subscribeTopics(selectedCategoryList);
-                  await writeContent(selectedCategoryList);
+                  await writeContent("categories", selectedCategoryList);
                   Navigator.of(context).pop();
                 },
               )
@@ -113,35 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () {
                     _showDialogCategories();
                   },
-                  child: const HomeCardWidget(assetName: 'get_notified',name: 'GET\nNOTIFIED'),
+                  child: const HomeCardWidget(
+                      assetName: 'get_notified', name: 'GET\nNOTIFIED'),
                 ),
                 GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("EVENTS"),
-                            content: Lottie.asset(
-                              'assets/404.json',
-                              repeat: true,
-                              reverse: true,
-                              animate: true,
-                              height: 150,
-                              width: 150,
-                            ),
-                            actions: [
-                              TextButton(
-                                child: const Text("OK"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            ],
-                          );
-                        });
+                    Navigator.of(context).push(MaterialPageRoute(builder:(context)=>CalendarPage()));
                   },
-                  child: const HomeCardWidget(assetName: 'marking_calendar',name: 'UPCOMING\nEVENTS'),
+                  child: const HomeCardWidget(
+                      assetName: 'marking_calendar', name: 'UPCOMING\nEVENTS'),
                 ),
               ],
             ),
@@ -151,7 +132,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
 
 class MultiSelectChip extends StatefulWidget {
   final List<Category> categoryList;

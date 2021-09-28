@@ -89,7 +89,7 @@ class _GetStartedState extends State<GetStarted> {
                   Center(
                       child: TextButton(
                     onPressed: () async {                      
-                      await writeContent([]);
+                      await writeContent("categories",[]);
                       signInAnonymously();
                     },
                     child: Text(

@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'VOLUNTARY SPAM APP',
       theme: ThemeData(
-          primarySwatch: Colors.indigo, secondaryHeaderColor: Colors.white),
+          primarySwatch: Colors.deepPurple, secondaryHeaderColor: Colors.white),
       home: const SplashScreen(),
     );
   }

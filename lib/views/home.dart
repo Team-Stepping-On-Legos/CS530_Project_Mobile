@@ -103,8 +103,53 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const HomeTopViewWidget(),
-            const SizedBox(
-              height: 20,
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _showDialogCategories();
+                    },
+                    child: const HomeCardWidget(
+                        assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            List<String> selectedCategoryList = [];
+                            //Here we will build the content of the dialog
+                            return AlertDialog(
+                              title: const Text("UPCOMING EVENTS"),
+                              content: Lottie.asset(
+                                'assets/404.json',
+                                repeat: true,
+                                reverse: true,
+                                animate: true,
+                                height: 150,
+                                width: 150,
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text("OK"),
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    },
+                    child: const HomeCardWidget(
+                        assetName: 'marking_calendar',
+                        name: 'UPCOMING\nEVENTS'),
+                  ),
+                ],
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,17 +157,40 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    _showDialogCategories();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
                   },
                   child: const HomeCardWidget(
-                      assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+                      assetName: 'basic_calendar', name: 'ALL\nEVENTS'),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder:(context)=>CalendarPage()));
-                  },
+                  onTap: () { showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            List<String> selectedCategoryList = [];
+                            //Here we will build the content of the dialog
+                            return AlertDialog(
+                              title: const Text("NOTIFICATION HISTORY"),
+                              content: Lottie.asset(
+                                'assets/404.json',
+                                repeat: true,
+                                reverse: true,
+                                animate: true,
+                                height: 150,
+                                width: 150,
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text("OK"),
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          });},
                   child: const HomeCardWidget(
-                      assetName: 'marking_calendar', name: 'UPCOMING\nEVENTS'),
+                      assetName: 'kanban', name: 'NOTIFICATION\nHISTORY'),
                 ),
               ],
             ),

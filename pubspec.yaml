@@ -62,6 +62,8 @@ flutter:
     - assets/bg_land.jpg
     - assets/404.json
     - assets/get_notified.json
+    - assets/basic_calendar.json
+    - assets/kanban.json
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

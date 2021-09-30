@@ -1,4 +1,3 @@
-
 import 'package:cs530_mobile/views/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -54,7 +53,7 @@ class _MyAppState extends State<MyApp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Notification"),
+              title: Text(message.notification!.title!),
               content: Text(message.notification!.body!),
               actions: [
                 TextButton(

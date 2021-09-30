@@ -4,6 +4,7 @@ import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/Category.dart';
 import 'package:cs530_mobile/views/calendar.dart';
+import 'package:cs530_mobile/views/get_started.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
 import 'package:cs530_mobile/widgets/home_top_view.dart';
 import 'package:flutter/material.dart';

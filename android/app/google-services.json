@@ -1,21 +1,20 @@
 {
   "project_info": {
-    "project_number": "526067308203",
-    "firebase_url": "https://voluntary-spam-app-default-rtdb.firebaseio.com",
-    "project_id": "voluntary-spam-app",
-    "storage_bucket": "voluntary-spam-app.appspot.com"
+    "project_number": "281425412658",
+    "project_id": "cs530-beclawski",
+    "storage_bucket": "cs530-beclawski.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:526067308203:android:53c4dcb8df98fef35d49ee",
+        "mobilesdk_app_id": "1:281425412658:android:2cccea700efe8c951b322b",
         "android_client_info": {
           "package_name": "com.example.cs530_mobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "526067308203-a1lgrgt45hl146dvu009na4kn33dqh6s.apps.googleusercontent.com",
+          "client_id": "281425412658-1g14qanfn0jjtmdfufh578knjq8ccg6u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.cs530_mobile",
@@ -23,20 +22,20 @@
           }
         },
         {
-          "client_id": "526067308203-76ciaqf2bsshv2323nma5tv1h0nhks37.apps.googleusercontent.com",
+          "client_id": "281425412658-2h6s79tc5pi91t50h9ii1p80142ktfoe.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAQ31FCCi356zPNMPjGFW6YHB5oE2q4ToA"
+          "current_key": "AIzaSyAL0Tnffgcl-Kpx7wt1MzwML8s6Wkdizys"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "526067308203-76ciaqf2bsshv2323nma5tv1h0nhks37.apps.googleusercontent.com",
+              "client_id": "281425412658-2h6s79tc5pi91t50h9ii1p80142ktfoe.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

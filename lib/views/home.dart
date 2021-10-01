@@ -1,13 +1,17 @@
 import 'dart:convert';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/Category.dart';
+import 'package:cs530_mobile/anims/animation_homepage.dart';
 import 'package:cs530_mobile/views/calendar.dart';
-import 'package:cs530_mobile/views/get_started.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
 import 'package:cs530_mobile/widgets/home_top_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,12 +21,22 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  late Animation<double> ba;
+
+  late AnimationController _bc;
+
   @override
   initState() {
     super.initState();
     _getSavedCategories();
     _getCategories();
+
+    _bc = AnimationController(
+      duration: const Duration(seconds: 7),
+      vsync: this,
+    )..repeat();
+    ba = CurvedAnimation(parent: _bc, curve: Curves.easeIn);
   }
 
   @override
@@ -97,18 +111,72 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent[50],
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const HomeTopViewWidget(),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            pinned: true,
+            snap: false,
+            floating: false,
+            elevation: 0,
+            expandedHeight: 190.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: FittedBox(
+                fit:  BoxFit.contain,
+                child: Padding(
+                  padding: const EdgeInsets.only( right: 60.0),
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      WavyAnimatedText(                    
+                        'VOLUNTARY SPAM APP',
+                        textAlign: TextAlign.justify,
+                        textStyle: GoogleFonts.robotoCondensed(                      
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w400),
+                        speed: const Duration(milliseconds: 200),
+                      ),
+                    ],
+                    totalRepeatCount: 1,
+                    pause: const Duration(milliseconds: 1000),
+                    displayFullTextOnTap: true,
+                    stopPauseOnTap: true,
+                  ),
+                ),
+              ),
+              background: const HomeTopViewWidget(),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: true,
+            child: _getBottomAppBar(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getBottomAppBar() {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: aT.evaluate(ba),
+            end: aB.evaluate(ba),
+            colors: [
+              darkBackground.evaluate(ba)!,
+              normalBackground.evaluate(ba)!,
+              lightBackground.evaluate(ba)!,
+            ],
+          ),
+        ),
+        child: BottomAppBar(
+          color: Colors.transparent,
+          child: Column(            
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -122,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            List<String> selectedCategoryList = [];
                             //Here we will build the content of the dialog
                             return AlertDialog(
                               title: const Text("UPCOMING EVENTS"),
@@ -146,29 +213,31 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                     },
                     child: const HomeCardWidget(
-                        assetName: 'marking_calendar',
-                        name: 'UPCOMING\nEVENTS'),
+                        assetName: 'upcoming',
+                        name: 'UPCOMING\nEVENTS',),
                   ),
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const CalendarPage()));
-                  },
-                  child: const HomeCardWidget(
-                      assetName: 'basic_calendar', name: 'ALL\nEVENTS'),
-                ),
-                GestureDetector(
-                  onTap: () { showDialog(
+              const SizedBox(
+                height: 10.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const CalendarPage()));
+                    },
+                    child: const HomeCardWidget(
+                        assetName: 'marking_calendar', name: 'ALL\nEVENTS'),
+                  ),
+                  GestureDetector(                
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            List<String> selectedCategoryList = [];
                             //Here we will build the content of the dialog
                             return AlertDialog(
                               title: const Text("NOTIFICATION HISTORY"),
@@ -189,15 +258,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                               ],
                             );
-                          });},
-                  child: const HomeCardWidget(
-                      assetName: 'kanban', name: 'NOTIFICATION\nHISTORY'),
-                ),
-              ],
-            ),
-          ],
+                          });
+                    },
+                    child: const HomeCardWidget(
+                        assetName: 'hist', name: 'NOTIFICATION\nHISTORY'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
     );
   }
 }

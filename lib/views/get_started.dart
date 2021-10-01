@@ -1,5 +1,6 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/anims/animation.dart';
 import 'package:cs530_mobile/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,67 +30,6 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
 
   late AnimationController _bc;
 
-  AlignmentTween aT =
-      AlignmentTween(begin: Alignment.topRight, end: Alignment.topLeft);
-  AlignmentTween aB =
-      AlignmentTween(begin: Alignment.bottomRight, end: Alignment.bottomLeft);
-
-  Animatable<Color?> darkBackground = TweenSequence<Color?>(
-    [
-      TweenSequenceItem(
-        weight: .5,
-        tween: ColorTween(
-          begin: Colors.deepPurple.withOpacity(.8),
-          end: Colors.deepPurple.withOpacity(.8),
-        ),
-      ),
-      TweenSequenceItem(
-        weight: .5,
-        tween: ColorTween(
-          begin: Colors.deepPurple.withOpacity(.8),
-          end: Colors.deepPurple.withOpacity(.8),
-        ),
-      ),
-    ],
-  );
-
-  Animatable<Color?> normalBackground = TweenSequence<Color?>(
-    [
-      TweenSequenceItem(
-        weight: .5,
-        tween: ColorTween(
-          begin: Colors.deepPurple.withOpacity(.6),
-          end: Colors.deepPurple.withOpacity(.6),
-        ),
-      ),
-      TweenSequenceItem(
-        weight: .5,
-        tween: ColorTween(
-          begin: Colors.deepPurple.withOpacity(.6),
-          end: Colors.deepPurple.withOpacity(.6),
-        ),
-      ),
-    ],
-  );
-
-  Animatable<Color?> lightBackground = TweenSequence<Color?>(
-    [
-      TweenSequenceItem(
-        weight: .5,
-        tween: ColorTween(
-          begin: Colors.deepPurple.withOpacity(.4),
-          end: Colors.indigo.withOpacity(.4),
-        ),
-      ),
-      TweenSequenceItem(
-        weight: .5,
-        tween: ColorTween(
-          begin: Colors.indigo.withOpacity(.4),
-          end: Colors.deepPurple.withOpacity(.4),
-        ),
-      ),
-    ],
-  );
 
 
   final FirebaseAuth _auth = FirebaseAuth.instance;

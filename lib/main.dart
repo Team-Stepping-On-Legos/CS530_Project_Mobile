@@ -46,6 +46,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    
+
+  FirebaseMessaging.instance.getToken().then((token){
+    print(token);
+  });
+
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("message recieved");
       print(message.notification!.body);
@@ -77,7 +84,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'VOLUNTARY SPAM APP',
       theme: ThemeData(
-          primarySwatch: Colors.deepPurple, secondaryHeaderColor: Colors.white),
+          primarySwatch: Colors.deepPurple,
+          secondaryHeaderColor: Colors.white,),
       home: const SplashScreen(),
     );
   }

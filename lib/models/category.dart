@@ -11,5 +11,7 @@ class Category {
   Map toJson() {
     return {'_id': id, 'name': name};
   }
+
+  Object? toList() {}
   
 }

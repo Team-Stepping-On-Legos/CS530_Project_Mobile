@@ -121,8 +121,7 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
                     ),
                     Center(
                         child: TextButton(
-                      onPressed: () async {                      
-                        await writeContent("categories",[]);
+                      onPressed: () {
                         signInAnonymously();
                       },
                       child: Text(

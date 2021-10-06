@@ -48,9 +48,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<dynamic> readCategoryList = [];
 
   _getCategories() {
-    API.getCategories().then((response) {
+    API.getCategories().then((response) async {     
       setState(() {
-        Iterable list = json.decode(response.body);
+        Iterable list = json.decode(response.body);        
         categoryList = list.map((model) => Category.fromJson(model)).toList();
       });
     });

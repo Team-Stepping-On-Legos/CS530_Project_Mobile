@@ -8,11 +8,6 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
-Future<File> get _serverCategoriesFile async {
-  final path = await _localPath;
-  return File('$path/serverCategories.txt');
-}
-
 Future<File> get _categoriesFile async {
   final path = await _localPath;
   return File('$path/categories.txt');
@@ -29,9 +24,6 @@ Future<String> readContent(String fileName) async {
     switch (fileName.toLowerCase()) {
       case "categories":
         file = await _categoriesFile;
-        break;
-      case "serverCategories":
-        file = await _serverCategoriesFile;
         break;
       case "events":
         file = await _eventsFile;
@@ -55,9 +47,6 @@ Future<File> writeContent(String fileName, List<dynamic> categories) async {
   switch (fileName.toLowerCase()) {
     case "categories":
       file = await _categoriesFile;
-      break;
-    case "serverCategories":
-      file = await _serverCategoriesFile;
       break;
     case "events":
       file = await _eventsFile;

@@ -12,6 +12,11 @@ Future<void> subscribeTopics(List<String> topics) async {
   }  
 }
 
+Future<void> subscribeTopic(String topic) async {   
+    // subscribe to topic on each app start-up
+    await fbm.subscribeToTopic(topic);
+}
+
 Future<void> unSubscribeTopic(String topic) async {   
     // subscribe to topic on each app start-up
     await fbm.unsubscribeFromTopic(topic);

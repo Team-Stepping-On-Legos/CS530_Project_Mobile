@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/anims/animation.dart';
 import 'package:cs530_mobile/views/home.dart';
@@ -18,6 +19,9 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    FBM fbm = new FBM();
+    fbm.subscribeTopic("Uncat");
 
     _bc = AnimationController(
       duration: const Duration(seconds: 7),

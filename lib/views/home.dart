@@ -3,9 +3,10 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
-import 'package:cs530_mobile/models/Category.dart';
+import 'package:cs530_mobile/models/category_data.dart';
 import 'package:cs530_mobile/anims/animation_homepage.dart';
 import 'package:cs530_mobile/views/calendar.dart';
+import 'package:cs530_mobile/views/notification_history.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
 import 'package:cs530_mobile/widgets/home_top_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,14 +25,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late Animation<double> ba;
-
   late AnimationController _bc;
+
+  bool downloadCategoriesCheck = true;
 
   @override
   initState() {
     super.initState();
+
     _getSavedCategories();
-    _getCategories();
+
+    _getCategories().then((_) => setState(() {
+          downloadCategoriesCheck = false;
+        }));
 
     _bc = AnimationController(
       duration: const Duration(seconds: 7),
@@ -47,10 +54,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<Category> categoryList = [];
   List<dynamic> readCategoryList = [];
 
-  _getCategories() {
-    API.getCategories().then((response) async {     
+  Future<void> _getCategories() async {
+    return API.getCategories().then((response) {
       setState(() {
-        Iterable list = json.decode(response.body);        
+        Iterable list = json.decode(response.body);
         categoryList = list.map((model) => Category.fromJson(model)).toList();
       });
     });
@@ -111,164 +118,154 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            pinned: true,
-            snap: false,
-            floating: false,
-            elevation: 0,
-            expandedHeight: 190.0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: FittedBox(
-                fit:  BoxFit.contain,
-                child: Padding(
-                  padding: const EdgeInsets.only( right: 60.0),
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      WavyAnimatedText(                    
-                        'VOLUNTARY SPAM APP',
-                        textAlign: TextAlign.justify,
-                        textStyle: GoogleFonts.robotoCondensed(                      
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400),
-                        speed: const Duration(milliseconds: 200),
-                      ),
-                    ],
-                    totalRepeatCount: 1,
-                    pause: const Duration(milliseconds: 1000),
-                    displayFullTextOnTap: true,
-                    stopPauseOnTap: true,
+      body: ModalProgressHUD(
+        inAsyncCall: downloadCategoriesCheck,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              pinned: true,
+              snap: false,
+              floating: false,
+              elevation: 0,
+              expandedHeight: 190.0,
+              flexibleSpace: FlexibleSpaceBar(
+                title: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 60.0),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        WavyAnimatedText(
+                          'VOLUNTARY SPAM APP',
+                          textAlign: TextAlign.justify,
+                          textStyle: GoogleFonts.robotoCondensed(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400),
+                          speed: const Duration(milliseconds: 200),
+                        ),
+                      ],
+                      totalRepeatCount: 1,
+                      pause: const Duration(milliseconds: 1000),
+                      displayFullTextOnTap: true,
+                      stopPauseOnTap: true,
+                    ),
                   ),
                 ),
+                background: const HomeTopViewWidget(),
               ),
-              background: const HomeTopViewWidget(),
             ),
-          ),
-          SliverFillRemaining(
-            hasScrollBody: true,
-            child: _getBottomAppBar(),
-          ),
-        ],
+            SliverFillRemaining(
+              hasScrollBody: true,
+              child: _getBottomAppBar(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _getBottomAppBar() {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: aT.evaluate(ba),
-            end: aB.evaluate(ba),
-            colors: [
-              darkBackground.evaluate(ba)!,
-              normalBackground.evaluate(ba)!,
-              lightBackground.evaluate(ba)!,
-            ],
-          ),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: aT.evaluate(ba),
+          end: aB.evaluate(ba),
+          colors: [
+            darkBackground.evaluate(ba)!,
+            normalBackground.evaluate(ba)!,
+            lightBackground.evaluate(ba)!,
+          ],
         ),
-        child: BottomAppBar(
-          color: Colors.transparent,
-          child: Column(            
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _showDialogCategories();
-                    },
-                    child: const HomeCardWidget(
-                        assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+      ),
+      child: BottomAppBar(
+        color: Colors.transparent,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _showDialogCategories();
+                  },
+                  child: const HomeCardWidget(
+                      assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          //Here we will build the content of the dialog
+                          return AlertDialog(
+                            title: const Text("UPCOMING EVENTS"),
+                            content: Lottie.asset(
+                              'assets/404.json',
+                              repeat: true,
+                              reverse: true,
+                              animate: true,
+                              height: 150,
+                              width: 150,
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text("OK"),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  },
+                  child: const HomeCardWidget(
+                    assetName: 'upcoming',
+                    name: 'UPCOMING\nEVENTS',
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            //Here we will build the content of the dialog
-                            return AlertDialog(
-                              title: const Text("UPCOMING EVENTS"),
-                              content: Lottie.asset(
-                                'assets/404.json',
-                                repeat: true,
-                                reverse: true,
-                                animate: true,
-                                height: 150,
-                                width: 150,
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text("OK"),
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ],
-                            );
-                          });
-                    },
-                    child: const HomeCardWidget(
-                        assetName: 'upcoming',
-                        name: 'UPCOMING\nEVENTS',),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const CalendarPage()));
-                    },
-                    child: const HomeCardWidget(
-                        assetName: 'marking_calendar', name: 'ALL\nEVENTS'),
-                  ),
-                  GestureDetector(                
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            //Here we will build the content of the dialog
-                            return AlertDialog(
-                              title: const Text("NOTIFICATION HISTORY"),
-                              content: Lottie.asset(
-                                'assets/404.json',
-                                repeat: true,
-                                reverse: true,
-                                animate: true,
-                                height: 150,
-                                width: 150,
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text("OK"),
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ],
-                            );
-                          });
-                    },
-                    child: const HomeCardWidget(
-                        assetName: 'hist', name: 'NOTIFICATION\nHISTORY'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
+                  },
+                  child: const HomeCardWidget(
+                      assetName: 'marking_calendar', name: 'ALL\nEVENTS'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    //Here we will build the content of the dialog
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => NotificationHistory(subscribedCategories:  _getSavedCategoriesAsString(),)));
+                  },
+                  child: const HomeCardWidget(
+                      assetName: 'hist', name: 'NOTIFICATION\nHISTORY'),
+                ),
+              ],
+            ),
+          ],
         ),
+      ),
     );
+  }
+
+  
+  String _getSavedCategoriesAsString() {
+    return (readCategoryList.join(',') == null)
+        ? "Uncat"
+        : readCategoryList.join(',').toString()+",Uncat";
   }
 }
 

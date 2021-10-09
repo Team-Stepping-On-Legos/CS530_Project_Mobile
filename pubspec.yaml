@@ -31,6 +31,7 @@ dependencies:
   avatar_glow: ^2.0.1
   cloud_firestore: ^2.5.3
   cupertino_icons: ^1.0.2
+  date_format: ^2.0.4
   firebase_analytics: ^8.3.2
   firebase_auth: ^3.1.1
   firebase_core: ^1.6.0
@@ -39,6 +40,7 @@ dependencies:
     sdk: flutter
   google_fonts: ^2.1.0
   lottie: ^1.2.0
+  modal_progress_hud_nsn: ^0.1.0-nullsafety-0
   path_provider: ^2.0.5
   table_calendar: ^3.0.2
 
@@ -60,7 +62,6 @@ flutter:
     - assets/subscriber.json
     - assets/marking_calendar.json
     - assets/bg.jpg
-    - assets/bg_land.jpg
     - assets/404.json
     - assets/get_notified.json
     - assets/hist.json

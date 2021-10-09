@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cs530_mobile/views/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

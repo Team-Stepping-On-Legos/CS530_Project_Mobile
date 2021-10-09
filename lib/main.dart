@@ -1,8 +1,8 @@
-
 import 'package:cs530_mobile/views/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +44,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   void initState() {
     super.initState();
@@ -54,11 +55,11 @@ class _MyAppState extends State<MyApp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Notification"),
+              title: Text(message.notification!.title!),
               content: Text(message.notification!.body!),
               actions: [
                 TextButton(
-                  child: const Text("Ok"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -78,7 +79,9 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'VOLUNTARY SPAM APP',
       theme: ThemeData(
-          primarySwatch: Colors.indigo, secondaryHeaderColor: Colors.white),
+        primarySwatch: Colors.deepPurple,
+        secondaryHeaderColor: Colors.white,
+      ),
       home: const SplashScreen(),
     );
   }

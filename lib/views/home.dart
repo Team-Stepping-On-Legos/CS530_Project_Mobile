@@ -129,31 +129,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               floating: false,
               elevation: 0,
               expandedHeight: 190.0,
-              flexibleSpace: FlexibleSpaceBar(
-                title: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 60.0),
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        WavyAnimatedText(
-                          'VOLUNTARY SPAM APP',
-                          textAlign: TextAlign.justify,
-                          textStyle: GoogleFonts.robotoCondensed(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w400),
-                          speed: const Duration(milliseconds: 200),
-                        ),
-                      ],
-                      totalRepeatCount: 1,
-                      pause: const Duration(milliseconds: 1000),
-                      displayFullTextOnTap: true,
-                      stopPauseOnTap: true,
+              flexibleSpace: Center(
+                child: FlexibleSpaceBar(
+                  title: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 60.0),
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          WavyAnimatedText(
+                            'VOLUNTARY SPAM APP',
+                            textAlign: TextAlign.justify,
+                            textStyle: GoogleFonts.robotoCondensed(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w400),
+                            speed: const Duration(milliseconds: 200),
+                          ),
+                        ],
+                        totalRepeatCount: 1,
+                        pause: const Duration(milliseconds: 1000),
+                        displayFullTextOnTap: true,
+                        stopPauseOnTap: true,
+                      ),
                     ),
                   ),
+                  background: const HomeTopViewWidget(),
                 ),
-                background: const HomeTopViewWidget(),
               ),
             ),
             SliverFillRemaining(

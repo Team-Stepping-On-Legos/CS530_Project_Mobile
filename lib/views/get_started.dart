@@ -19,10 +19,6 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
-    FBM fbm = new FBM();
-    fbm.subscribeTopic("Uncat");
-
     _bc = AnimationController(
       duration: const Duration(seconds: 7),
       vsync: this,
@@ -33,8 +29,6 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
   late Animation<double> ba;
 
   late AnimationController _bc;
-
-
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var _user = FirebaseAuth.instance.currentUser;
@@ -47,9 +41,9 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
     return _user == null
         ? Scaffold(
             body: Container(
-              width: _w,
-              height: _h,
-              decoration: BoxDecoration(
+            width: _w,
+            height: _h,
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: aT.evaluate(ba),
                 end: aB.evaluate(ba),
@@ -58,89 +52,90 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
                   normalBackground.evaluate(ba)!,
                   lightBackground.evaluate(ba)!,
                 ],
-              ),),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    AvatarGlow(
-                      endRadius: 90,
-                      duration: const Duration(seconds: 2),
-                      glowColor: Colors.white24,
-                      repeat: true,
-                      repeatPauseDuration: const Duration(seconds: 2),
-                      startDelay: const Duration(seconds: 1),
-                      child: Material(
-                          elevation: 8.0,
-                          shape: const CircleBorder(),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey[100],
-                            child: Lottie.asset('assets/subscriber.json',
+              ),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  AvatarGlow(
+                    endRadius: 90,
+                    duration: const Duration(seconds: 2),
+                    glowColor: Colors.white24,
+                    repeat: true,
+                    repeatPauseDuration: const Duration(seconds: 2),
+                    startDelay: const Duration(seconds: 1),
+                    child: Material(
+                        elevation: 8.0,
+                        shape: const CircleBorder(),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey[100],
+                          child: Lottie.asset('assets/subscriber.json',
                               repeat: true,
                               reverse: true,
                               animate: true,
                               height: 150,
                               width: 150),
-                            radius: 50.0,
-                          )),
+                          radius: 50.0,
+                        )),
+                  ),
+                  const Center(
+                    child: Text(
+                      "Hello!",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 35.0,
+                          color: color),
                     ),
-                    const Center(
-                      child: Text(
-                        "Hello!",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 35.0,
-                            color: color),
-                      ),
+                  ),
+                  const Center(
+                    child: Text(
+                      "Welcome to Voluntary Spam",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25.0,
+                          color: color),
                     ),
-                    const Center(
-                      child: Text(
-                        "Welcome to Voluntary Spam",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25.0,
-                            color: color),
-                      ),
+                  ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  const Center(
+                    child: Text(
+                      "We noticed",
+                      style: TextStyle(fontSize: 20.0, color: color),
                     ),
-                    const SizedBox(
-                      height: 30.0,
+                  ),
+                  const Center(
+                    child: Text(
+                      "It is your first time here",
+                      style: TextStyle(fontSize: 20.0, color: color),
                     ),
-                    const Center(
-                      child: Text(
-                        "We noticed",
-                        style: TextStyle(fontSize: 20.0, color: color),
-                      ),
+                  ),
+                  const SizedBox(
+                    height: 100.0,
+                  ),
+                  const SizedBox(
+                    height: 50.0,
+                  ),
+                  Center(
+                      child: TextButton(
+                    onPressed: () {
+                      signInAnonymously();
+                    },
+                    child: Text(
+                      "Get Started".toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          color: color),
                     ),
-                    const Center(
-                      child: Text(
-                        "It is your first time here",
-                        style: TextStyle(fontSize: 20.0, color: color),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 100.0,
-                    ),
-                    const SizedBox(
-                      height: 50.0,
-                    ),
-                    Center(
-                        child: TextButton(
-                      onPressed: () {
-                        signInAnonymously();
-                      },
-                      child: Text(
-                        "Get Started".toUpperCase(),
-                        style: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                            color: color),
-                      ),
-                    )),
-                  ],
-                ),
+                  )),
+                ],
               ),
-            ))
+            ),
+          ))
         : const HomeScreen();
   }
 
@@ -149,6 +144,8 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
       setState(() {
         _user = result.user;
       });
+      FBM fbm = FBM();
+      fbm.subscribeTopic("Uncat");
     });
   }
 }

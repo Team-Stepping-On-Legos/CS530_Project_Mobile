@@ -1,7 +1,10 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/anims/animation.dart';
 import 'package:cs530_mobile/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -12,17 +15,46 @@ class GetStarted extends StatefulWidget {
   _GetStartedState createState() => _GetStartedState();
 }
 
-class _GetStartedState extends State<GetStarted> {
+class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    _bc = AnimationController(
+      duration: const Duration(seconds: 7),
+      vsync: this,
+    )..repeat();
+    ba = CurvedAnimation(parent: _bc, curve: Curves.easeIn);
+  }
+
+  late Animation<double> ba;
+
+  late AnimationController _bc;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var _user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
+    double _w = MediaQuery.of(context).size.width;
+    double _h = MediaQuery.of(context).size.height;
     const color = Colors.white;
     return _user == null
         ? Scaffold(
-            backgroundColor: Colors.deepPurple,
-            body: Center(
+            body: Container(
+            width: _w,
+            height: _h,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: aT.evaluate(ba),
+                end: aB.evaluate(ba),
+                colors: [
+                  darkBackground.evaluate(ba)!,
+                  normalBackground.evaluate(ba)!,
+                  lightBackground.evaluate(ba)!,
+                ],
+              ),
+            ),
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -39,11 +71,11 @@ class _GetStartedState extends State<GetStarted> {
                         child: CircleAvatar(
                           backgroundColor: Colors.grey[100],
                           child: Lottie.asset('assets/subscriber.json',
-                            repeat: true,
-                            reverse: true,
-                            animate: true,
-                            height: 150,
-                            width: 150),
+                              repeat: true,
+                              reverse: true,
+                              animate: true,
+                              height: 150,
+                              width: 150),
                           radius: 50.0,
                         )),
                   ),
@@ -88,8 +120,7 @@ class _GetStartedState extends State<GetStarted> {
                   ),
                   Center(
                       child: TextButton(
-                    onPressed: () async {                      
-                      await writeContent([]);
+                    onPressed: () {
                       signInAnonymously();
                     },
                     child: Text(
@@ -103,7 +134,8 @@ class _GetStartedState extends State<GetStarted> {
                   )),
                 ],
               ),
-            ))
+            ),
+          ))
         : const HomeScreen();
   }
 
@@ -112,6 +144,8 @@ class _GetStartedState extends State<GetStarted> {
       setState(() {
         _user = result.user;
       });
+      FBM fbm = FBM();
+      fbm.subscribeTopic("Uncat");
     });
   }
 }

@@ -1,12 +1,20 @@
 import 'dart:convert';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
-import 'package:cs530_mobile/models/Category.dart';
+import 'package:cs530_mobile/models/category_data.dart';
+import 'package:cs530_mobile/anims/animation_homepage.dart';
+import 'package:cs530_mobile/views/calendar.dart';
+import 'package:cs530_mobile/views/notification_history.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
 import 'package:cs530_mobile/widgets/home_top_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,12 +23,27 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  late Animation<double> ba;
+  late AnimationController _bc;
+
+  bool downloadCategoriesCheck = true;
+
   @override
   initState() {
     super.initState();
+
     _getSavedCategories();
-    _getCategories();
+
+    _getCategories().then((_) => setState(() {
+          downloadCategoriesCheck = false;
+        }));
+
+    _bc = AnimationController(
+      duration: const Duration(seconds: 7),
+      vsync: this,
+    )..repeat();
+    ba = CurvedAnimation(parent: _bc, curve: Curves.easeIn);
   }
 
   @override
@@ -31,8 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Category> categoryList = [];
   List<dynamic> readCategoryList = [];
 
-  _getCategories() {
-    API.getCategories().then((response) {
+  Future<void> _getCategories() async {
+    return API.getCategories().then((response) {
       setState(() {
         Iterable list = json.decode(response.body);
         categoryList = list.map((model) => Category.fromJson(model)).toList();
@@ -41,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _getSavedCategories() {
-    readContent().then((String value) {
+    readContent("categories").then((String value) {
       setState(() {
         readCategoryList = jsonDecode(value);
       });
@@ -83,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fbm.unSubscribeTopic(item.name);
                   }
                   fbm.subscribeTopics(selectedCategoryList);
-                  await writeContent(selectedCategoryList);
+                  await writeContent("categories", selectedCategoryList);
                   Navigator.of(context).pop();
                 },
               )
@@ -95,33 +118,93 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent[50],
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const HomeTopViewWidget(),
-            const SizedBox(
-              height: 20,
+      body: ModalProgressHUD(
+        inAsyncCall: downloadCategoriesCheck,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              pinned: true,
+              snap: false,
+              floating: false,
+              elevation: 0,
+              expandedHeight: 190.0,
+              flexibleSpace: Center(
+                child: FlexibleSpaceBar(
+                  title: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 60.0),
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          WavyAnimatedText(
+                            'VOLUNTARY SPAM APP',
+                            textAlign: TextAlign.justify,
+                            textStyle: GoogleFonts.robotoCondensed(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w400),
+                            speed: const Duration(milliseconds: 200),
+                          ),
+                        ],
+                        totalRepeatCount: 1,
+                        pause: const Duration(milliseconds: 1000),
+                        displayFullTextOnTap: true,
+                        stopPauseOnTap: true,
+                      ),
+                    ),
+                  ),
+                  background: const HomeTopViewWidget(),
+                ),
+              ),
             ),
+            SliverFillRemaining(
+              hasScrollBody: true,
+              child: _getBottomAppBar(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getBottomAppBar() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: aT.evaluate(ba),
+          end: aB.evaluate(ba),
+          colors: [
+            darkBackground.evaluate(ba)!,
+            normalBackground.evaluate(ba)!,
+            lightBackground.evaluate(ba)!,
+          ],
+        ),
+      ),
+      child: BottomAppBar(
+        color: Colors.transparent,
+        child: Column(
+          children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
                     _showDialogCategories();
                   },
-                  child: const HomeCardWidget(assetName: 'get_notified',name: 'GET\nNOTIFIED'),
+                  child: const HomeCardWidget(
+                      assetName: 'get_notified', name: 'GET\nNOTIFIED'),
                 ),
                 GestureDetector(
                   onTap: () {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
+                          //Here we will build the content of the dialog
                           return AlertDialog(
-                            title: const Text("EVENTS"),
+                            title: const Text("UPCOMING EVENTS"),
                             content: Lottie.asset(
                               'assets/404.json',
                               repeat: true,
@@ -130,10 +213,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 150,
                               width: 150,
                             ),
-                            actions: [
+                            actions: <Widget>[
                               TextButton(
                                 child: const Text("OK"),
-                                onPressed: () {
+                                onPressed: () async {
                                   Navigator.of(context).pop();
                                 },
                               )
@@ -141,7 +224,36 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         });
                   },
-                  child: const HomeCardWidget(assetName: 'marking_calendar',name: 'UPCOMING\nEVENTS'),
+                  child: const HomeCardWidget(
+                    assetName: 'upcoming',
+                    name: 'UPCOMING\nEVENTS',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
+                  },
+                  child: const HomeCardWidget(
+                      assetName: 'marking_calendar', name: 'ALL\nEVENTS'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    //Here we will build the content of the dialog
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => NotificationHistory(subscribedCategories:  _getSavedCategoriesAsString(),)));
+                  },
+                  child: const HomeCardWidget(
+                      assetName: 'hist', name: 'NOTIFICATION\nHISTORY'),
                 ),
               ],
             ),
@@ -150,8 +262,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
+  
+  String _getSavedCategoriesAsString() {
+    return (readCategoryList.join(',') == null)
+        ? "Uncat"
+        : readCategoryList.join(',').toString()+",Uncat";
+  }
+}
 
 class MultiSelectChip extends StatefulWidget {
   final List<Category> categoryList;

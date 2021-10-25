@@ -39,15 +39,19 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^2.1.0
+  json_annotation: ^4.3.0
   lottie: ^1.2.0
   modal_progress_hud_nsn: ^0.1.0-nullsafety-0
   path_provider: ^2.0.5
   table_calendar: ^3.0.2
+  intl: ^0.17.0
 
 dev_dependencies:
+  build_runner: ^2.0.0
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

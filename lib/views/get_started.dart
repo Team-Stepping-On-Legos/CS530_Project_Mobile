@@ -1,6 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
-import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/anims/animation.dart';
 import 'package:cs530_mobile/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';

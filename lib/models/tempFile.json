@@ -1,0 +1,34 @@
+{
+  "id": "ja3ac1m7aba7lf9cturv0gflug",
+  "summary": "test",
+  "description": "test event",
+  "startTime": "2021-10-24T14:24:18-04:00",
+  "endTime": "2021-10-24T14:54:18-04:00",
+  "htmlLink": "https://www.google.com/calendar/event?eid=amEzYWMxbTdhYmE3bGY5Y3R1cnYwZ2ZsdWcgb25sZWdvc3NAbQ",
+  "event": {
+    "kind": "calendar#event",
+    "etag": "\"3270199718268000\"",
+    "id": "ja3ac1m7aba7lf9cturv0gflug",
+    "status": "confirmed",
+    "htmlLink": "https://www.google.com/calendar/event?eid=amEzYWMxbTdhYmE3bGY5Y3R1cnYwZ2ZsdWcgb25sZWdvc3NAbQ",
+    "created": "2021-10-24T18:24:19.000Z",
+    "updated": "2021-10-24T18:24:19.134Z",
+    "summary": "test",
+    "description": "test event",
+    "creator": { "email": "onlegoss@gmail.com", "self": true },
+    "organizer": { "email": "onlegoss@gmail.com", "self": true },
+    "start": {
+      "dateTime": "2021-10-24T14:24:18-04:00",
+      "timeZone": "America/New_York"
+    },
+    "end": {
+      "dateTime": "2021-10-24T14:54:18-04:00",
+      "timeZone": "America/New_York"
+    },
+    "iCalUID": "ja3ac1m7aba7lf9cturv0gflug@google.com",
+    "sequence": 0,
+    "reminders": { "useDefault": true },
+    "eventType": "default"
+  },
+  "notifications": []
+}

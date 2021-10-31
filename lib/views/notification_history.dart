@@ -5,6 +5,7 @@ import 'package:cs530_mobile/models/notification_history_data.dart';
 import 'package:cs530_mobile/widgets/notification_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class NotificationHistory extends StatefulWidget {
@@ -46,6 +47,7 @@ class _NotificationHistoryState extends State<NotificationHistory> {
 
   @override
   Widget build(BuildContext context) {
+    double _w = MediaQuery.of(context).size.width;
     return ModalProgressHUD(
       inAsyncCall: _downloadNotificationDataCheck,
       child: RefreshIndicator(
@@ -82,16 +84,20 @@ class _NotificationHistoryState extends State<NotificationHistory> {
                 Colors.indigo.shade300.withOpacity(.8),
                 Colors.deepPurple.shade300.withOpacity(.8),
               ],
-            )),            
+            )),
+            child: AnimationLimiter(
               child: ListView(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
                 reverse: true,
-                shrinkWrap: true,                
-                children: [
+                shrinkWrap: true,
+                children: [                  
                   ..._notificationHistoryList.reversed.map((event) {
-                    return Center(child: NotificationTile(event));
+                    return Center(child: NotificationTile(event,_notificationHistoryList.indexOf(event)));
                   }),
                 ],
               ),
+            ),
           ),
         ),
       ),

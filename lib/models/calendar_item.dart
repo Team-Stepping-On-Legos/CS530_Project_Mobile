@@ -14,6 +14,7 @@ class CalendarItem {
 	String? htmlLink;
 	Event? event;
 	List<dynamic>? notifications;
+  
 
 	CalendarItem({
 		this.id, 

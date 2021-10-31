@@ -22,7 +22,7 @@ class NotificationTile extends StatelessWidget {
             padding: const EdgeInsets.only(top: 10.0, right: 10.0),
             child: Text(
               formatDate(DateTime.parse(ntData.time),
-                  [mm, '-', dd, '-', yyyy, ' ', HH, ':', nn]).toString(),
+                  [mm, '-', dd, '-', yyyy, ' ', hh, ':', nn, ' ', am]).toString(),
               style: const TextStyle(
                 color: Colors.grey,
                 wordSpacing: 5.0,

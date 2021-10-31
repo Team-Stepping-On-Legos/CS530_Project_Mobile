@@ -174,10 +174,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           0.9,
         ],
         colors: [
-          Colors.indigo.shade300.withOpacity(.9),
-          Colors.deepPurple.shade300.withOpacity(.9),
-          Colors.indigo.shade300.withOpacity(.8),
-          Colors.deepPurple.shade300.withOpacity(.8),
+          Colors.white.withOpacity(.5),
+          Colors.indigo.shade300.withOpacity(.5),
+          Colors.deepPurple.shade300.withOpacity(.5),
+          Colors.indigo.withOpacity(.5),
         ],
       )),
       child: BottomAppBar(

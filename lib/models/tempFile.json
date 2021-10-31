@@ -1,34 +1,37 @@
 {
-  "id": "ja3ac1m7aba7lf9cturv0gflug",
-  "summary": "test",
-  "description": "test event",
-  "startTime": "2021-10-24T14:24:18-04:00",
-  "endTime": "2021-10-24T14:54:18-04:00",
-  "htmlLink": "https://www.google.com/calendar/event?eid=amEzYWMxbTdhYmE3bGY5Y3R1cnYwZ2ZsdWcgb25sZWdvc3NAbQ",
+  "id": "342rt18c09788g6skijgg1u0bl",
+  "summary": "event!",
+  "startTime": "2021-10-26T19:30:00-04:00",
+  "endTime": "2021-10-26T20:30:00-04:00",
+  "htmlLink": "https://www.google.com/calendar/event?eid=MzQycnQxOGMwOTc4OGc2c2tpamdnMXUwYmwgb25sZWdvc3NAbQ",
   "event": {
     "kind": "calendar#event",
-    "etag": "\"3270199718268000\"",
-    "id": "ja3ac1m7aba7lf9cturv0gflug",
+    "etag": "\"3270587436286000\"",
+    "id": "342rt18c09788g6skijgg1u0bl",
     "status": "confirmed",
-    "htmlLink": "https://www.google.com/calendar/event?eid=amEzYWMxbTdhYmE3bGY5Y3R1cnYwZ2ZsdWcgb25sZWdvc3NAbQ",
-    "created": "2021-10-24T18:24:19.000Z",
-    "updated": "2021-10-24T18:24:19.134Z",
-    "summary": "test",
-    "description": "test event",
+    "htmlLink": "https://www.google.com/calendar/event?eid=MzQycnQxOGMwOTc4OGc2c2tpamdnMXUwYmwgb25sZWdvc3NAbQ",
+    "created": "2021-10-27T00:15:18.000Z",
+    "updated": "2021-10-27T00:15:18.143Z",
+    "summary": "event!",
     "creator": { "email": "onlegoss@gmail.com", "self": true },
     "organizer": { "email": "onlegoss@gmail.com", "self": true },
     "start": {
-      "dateTime": "2021-10-24T14:24:18-04:00",
+      "dateTime": "2021-10-26T19:30:00-04:00",
       "timeZone": "America/New_York"
     },
     "end": {
-      "dateTime": "2021-10-24T14:54:18-04:00",
+      "dateTime": "2021-10-26T20:30:00-04:00",
       "timeZone": "America/New_York"
     },
-    "iCalUID": "ja3ac1m7aba7lf9cturv0gflug@google.com",
+    "iCalUID": "342rt18c09788g6skijgg1u0bl@google.com",
     "sequence": 0,
     "reminders": { "useDefault": true },
     "eventType": "default"
   },
-  "notifications": []
+  "notifications": [],
+  "calendarId": "onlegoss@gmail.com",
+  "title": "event!",
+  "category": "time",
+  "start": "2021-10-26T19:30:00-04:00",
+  "end": "2021-10-26T20:30:00-04:00"
 }

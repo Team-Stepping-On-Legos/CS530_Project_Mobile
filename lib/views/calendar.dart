@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
@@ -65,7 +64,6 @@ class _CalendarPageState extends State<CalendarPage> {
           // print(groupDate);
           // print(_events[groupDate]!.toList().toString());
         }
-
         // print(_events);
       });
     });
@@ -227,12 +225,12 @@ class _CalendarPageState extends State<CalendarPage> {
                             height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width / 1.2,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(10),
                                 color: Colors.white,
                                 border: Border.all(color: Colors.grey)),
                             child: Center(
                                 child: Text(
-                              event.summary!,
+                              event.summary ?? '',
                               style: const TextStyle(
                                   color: Colors.deepPurple,
                                   fontWeight: FontWeight.bold,
@@ -240,116 +238,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             )),
                           ),
                           onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  //Here we will build the content of the dialog
-                                  return AlertDialog(
-                                    buttonPadding: const EdgeInsets.all(25.0),
-                                    title: Text(
-                                      event.description!,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    content: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "START: ",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  wordSpacing: 5.0,
-                                                ),
-                                              ),
-                                              Text(
-                                                formatDate(event.startTime!, [
-                                                  mm,
-                                                  '-',
-                                                  dd,
-                                                  '-',
-                                                  yyyy,
-                                                  ' ',
-                                                  HH,
-                                                  ':',
-                                                  nn
-                                                ]).toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.grey,
-                                                  wordSpacing: 5.0,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "END: ",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  wordSpacing: 5.0,
-                                                ),
-                                              ),
-                                              Text(
-                                                formatDate(event.endTime!, [
-                                                  mm,
-                                                  '-',
-                                                  dd,
-                                                  '-',
-                                                  yyyy,
-                                                  ' ',
-                                                  HH,
-                                                  ':',
-                                                  nn
-                                                ]).toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.grey,
-                                                  wordSpacing: 5.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "DESCRIPTION: ",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  wordSpacing: 5.0,
-                                                ),
-                                              ),
-                                              Text(
-                                                event.description!,
-                                                style: const TextStyle(
-                                                  color: Colors.grey,
-                                                  wordSpacing: 5.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: const <Widget>[
-                                      CircleAvatar(
-                                          backgroundColor: Colors.orange,
-                                          child: Icon(
-                                            Icons.message_outlined,
-                                            color: Colors.white,
-                                          )),
-                                      CircleAvatar(
-                                          backgroundColor: Colors.orange,
-                                          child: Icon(
-                                            Icons.notifications_off_sharp,
-                                            color: Colors.white,
-                                          )),
-                                    ],
-                                  );
-                                });
+                            _calendarDetailDialog(event);
                           },
                         ),
                       ),
@@ -360,5 +249,187 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       ),
     );
+  }
+
+  _calendarDetailDialog(CalendarItem event) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          //Here we will build the content of the dialog
+          return AlertDialog(
+            buttonPadding: const EdgeInsets.all(25.0),
+            title: Text(
+              event.summary ?? '',
+              textAlign: TextAlign.center,
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "START: ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        formatDate(event.startTime!, [
+                          mm,
+                          '-',
+                          dd,
+                          '-',
+                          yyyy,
+                          ' ',
+                          hh,
+                          ':',
+                          nn,
+                          ' ',
+                          am,
+                        ]).toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "END: ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          wordSpacing: 5.0,
+                        ),
+                      ),
+                      event.endTime == null
+                          ? const Text('')
+                          : Text(
+                              formatDate(event.endTime!, [
+                                mm,
+                                '-',
+                                dd,
+                                '-',
+                                yyyy,
+                                ' ',
+                                hh,
+                                ':',
+                                nn,
+                                ' ',
+                                am,
+                              ]).toString(),
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 25.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        "CATEGORIES: ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          wordSpacing: 5.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        '[Dan, Will, Send]',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 25.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "DESCRIPTION: ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          wordSpacing: 5.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        event.description ?? '',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ActionChip(
+                    backgroundColor: Colors.deepPurple[200],
+                    avatar: const Icon(
+                      Icons.dehaze_outlined,
+                      color: Colors.white,
+                      size: 20),
+                    label: const Text(
+                        "DETAIL",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                    ), onPressed: (){}),
+                  FilterChip(
+                    backgroundColor: Colors.deepPurple[200],
+                    avatar: const Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                      size: 20),
+                    label: const Text(
+                        "MUTE",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                    ),
+                    // selected: _filters.contains(company.name),
+                    selected: true,
+                    selectedColor: Colors.red,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        if (selected) {
+                          // _filters.add(company.name);
+                        } else {
+                          // _filters.removeWhere((String name) {
+                          //   return name == company.name;
+                          // });
+                        }
+                      });
+                    },
+                  ),                
+                ],
+              )
+            ],
+          );
+        });
   }
 }

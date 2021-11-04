@@ -52,7 +52,7 @@ class _CalendarPageState extends State<CalendarPage> {
         for (var cl in _calendarItemsList) {
           DateTime groupDate = DateTime(
               cl.startTime!.year, cl.startTime!.month, cl.startTime!.day);
-          if (cl.event != null) {
+          if (cl.id != null) {
             List<CalendarItem>? list = _events[groupDate];
             if (list == null) {
               list = [cl];

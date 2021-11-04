@@ -6,6 +6,7 @@ import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/category_data.dart';
 import 'package:cs530_mobile/views/calendar.dart';
 import 'package:cs530_mobile/views/notification_history.dart';
+import 'package:cs530_mobile/views/upcoming_events.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
 import 'package:cs530_mobile/widgets/home_top_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -204,38 +205,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               assetName: 'get_notified', name: 'GET\nNOTIFIED'),
         ),
         // UPCOMING EVENTS
-        GestureDetector(
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  //Here we will build the content of the dialog
-                  return AlertDialog(
-                    title: const Text("UPCOMING EVENTS"),
-                    content: Lottie.asset(
-                      'assets/404.json',
-                      repeat: true,
-                      reverse: true,
-                      animate: true,
-                      height: 120,
-                      width: 120,
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text("OK"),
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                });
-          },
+        GestureDetector(onTap: () {
+          //   showDialog(
+          //       context: context,
+          //       builder: (BuildContext context) {
+          //         //Here we will build the content of the dialog
+          //         return AlertDialog(
+          //           title: const Text("UPCOMING EVENTS"),
+          //           content: Lottie.asset(
+          //             'assets/404.json',
+          //             repeat: true,
+          //             reverse: true,
+          //             animate: true,
+          //             height: 120,
+          //             width: 120,
+          //           ),
+          //           actions: <Widget>[
+          //             TextButton(
+          //               child: const Text("OK"),
+          //               onPressed: () async {
+          //                 Navigator.of(context).pop();
+          //               },
+          //             )
+          //           ],
+          //         );
+          //       });
+          // }
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => UpcomingViewCalendar( subscribedCategories: _getSavedCategoriesAsString())));
+        },
           child: const HomeCardWidget(
             assetName: 'upcoming',
             name: 'UPCOMING\nEVENTS',
-          ),
-        ),
+          ),),
         // ALL EVENTS
         GestureDetector(
           onTap: () {

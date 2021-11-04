@@ -16,11 +16,15 @@ CalendarItem _$CalendarItemFromJson(Map<String, dynamic> json) => CalendarItem(
       endTime: json['endTime'] == null
           ? null
           : DateTime.parse(json['endTime'] as String),
-      htmlLink: json['htmlLink'] as String?,
-      event: json['event'] == null
-          ? null
-          : Event.fromJson(json['event'] as Map<String, dynamic>),
-      notifications: json['notifications'] as List<dynamic>?,
+      notifications: (json['notifications'] as List<dynamic>?)
+          ?.map((e) => e as NotificationHistoryData)
+          .toList(),
+      calendarId: json['calendarId'] as String?,
+      title: json['title'] as String?,
+      category: json['category'] as String?,
+      start: json['start'] as String?,
+      end: json['end'] as String?,
+      isAllDay: json['isAllDay'] as bool?,
     );
 
 Map<String, dynamic> _$CalendarItemToJson(CalendarItem instance) =>
@@ -28,9 +32,13 @@ Map<String, dynamic> _$CalendarItemToJson(CalendarItem instance) =>
       'id': instance.id,
       'summary': instance.summary,
       'description': instance.description,
-      'startTime': instance.startTime?.toIso8601String(),
-      'endTime': instance.endTime?.toIso8601String(),
-      'htmlLink': instance.htmlLink,
-      'event': instance.event,
+      'startTime': instance.startTime,
+      'endTime': instance.endTime,
       'notifications': instance.notifications,
+      'calendarId': instance.calendarId,
+      'title': instance.title,
+      'category': instance.category,
+      'start': instance.start,
+      'end': instance.end,
+      'isAllDay': instance.isAllDay,
     };

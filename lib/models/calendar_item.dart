@@ -1,6 +1,5 @@
+import 'package:cs530_mobile/models/notification_history_data.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'event.dart';
 
 part 'calendar_item.g.dart';
 
@@ -11,20 +10,27 @@ class CalendarItem {
 	String? description;
 	DateTime? startTime;
 	DateTime? endTime;
-	String? htmlLink;
-	Event? event;
-	List<dynamic>? notifications;
-  
+	List<NotificationHistoryData>? notifications;
+	String? calendarId;
+	String? title;
+	String? category;
+	String? start;
+	String? end;
+	bool? isAllDay;
 
 	CalendarItem({
 		this.id, 
 		this.summary, 
-		this.description, 
+    this.description,
 		this.startTime, 
 		this.endTime, 
-		this.htmlLink, 
-		this.event, 
 		this.notifications, 
+		this.calendarId, 
+		this.title, 
+		this.category, 
+		this.start, 
+		this.end, 
+		this.isAllDay, 
 	});
 
 	factory CalendarItem.fromJson(Map<String, dynamic> json) {
@@ -32,6 +38,4 @@ class CalendarItem {
 	}
 
 	Map<String, dynamic> toJson() => _$CalendarItemToJson(this);
-  
-  Object? toList() {}
 }

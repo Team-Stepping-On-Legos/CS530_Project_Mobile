@@ -1,37 +1,14 @@
 {
-  "id": "342rt18c09788g6skijgg1u0bl",
-  "summary": "event!",
-  "startTime": "2021-10-26T19:30:00-04:00",
-  "endTime": "2021-10-26T20:30:00-04:00",
-  "htmlLink": "https://www.google.com/calendar/event?eid=MzQycnQxOGMwOTc4OGc2c2tpamdnMXUwYmwgb25sZWdvc3NAbQ",
-  "event": {
-    "kind": "calendar#event",
-    "etag": "\"3270587436286000\"",
-    "id": "342rt18c09788g6skijgg1u0bl",
-    "status": "confirmed",
-    "htmlLink": "https://www.google.com/calendar/event?eid=MzQycnQxOGMwOTc4OGc2c2tpamdnMXUwYmwgb25sZWdvc3NAbQ",
-    "created": "2021-10-27T00:15:18.000Z",
-    "updated": "2021-10-27T00:15:18.143Z",
-    "summary": "event!",
-    "creator": { "email": "onlegoss@gmail.com", "self": true },
-    "organizer": { "email": "onlegoss@gmail.com", "self": true },
-    "start": {
-      "dateTime": "2021-10-26T19:30:00-04:00",
-      "timeZone": "America/New_York"
-    },
-    "end": {
-      "dateTime": "2021-10-26T20:30:00-04:00",
-      "timeZone": "America/New_York"
-    },
-    "iCalUID": "342rt18c09788g6skijgg1u0bl@google.com",
-    "sequence": 0,
-    "reminders": { "useDefault": true },
-    "eventType": "default"
-  },
-  "notifications": [],
+  "id": "0701b84cbqc7li0bf97m50n9f7",
+  "summary": "Time to Vote",
+  "description": "Regular class time",
+  "startTime": "2021-11-02",
+  "endTime": "2021-11-02",
+  "notifications": ["123","456","678"],
   "calendarId": "onlegoss@gmail.com",
-  "title": "event!",
-  "category": "time",
-  "start": "2021-10-26T19:30:00-04:00",
-  "end": "2021-10-26T20:30:00-04:00"
+  "title": "Time to Vote",
+  "category": "allday",
+  "start": "2021-11-02",
+  "end": "2021-11-02",
+  "isAllDay": true
 }

@@ -2,7 +2,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.example.cs530_mobile"
 >
-   <application android:label="cs530_mobile" android:icon="@mipmap/ic_launcher">
+   <application android:label="Voluntary Spam" android:icon="@mipmap/launcher_icon">
         <activity
       android:name=".MainActivity"
       android:launchMode="singleTop"

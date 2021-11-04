@@ -19,7 +19,7 @@ class HomeCardWidget extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Card(
-          margin: const EdgeInsets. all(10.0),
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),),
           color: Colors.white38,
@@ -32,8 +32,8 @@ class HomeCardWidget extends StatelessWidget {
                 repeat: true,
                 reverse: true,
                 animate: true,
-                height: 150,
-                width: 150,
+                height: 120,
+                width: 120,
               ),
               Text(
                 name,
@@ -44,7 +44,6 @@ class HomeCardWidget extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 10,)
             ],
           ),
         ),

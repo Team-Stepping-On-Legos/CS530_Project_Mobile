@@ -15,4 +15,10 @@ class API {
     var url = baseUrl + "/notify/previousByCategory?category=$categories";
     return http.get(Uri.parse(url));
   }
+
+  
+  static Future getCalendarItems(String categories) {
+    var url = baseUrl + "/api/calendar/list";
+    return http.get(Uri.parse(url));
+  }
 }

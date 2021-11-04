@@ -38,16 +38,28 @@ dependencies:
   firebase_messaging: ^10.0.7
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
+  flutter_staggered_animations: ^1.0.0
   google_fonts: ^2.1.0
+  intl: ^0.17.0
+  json_annotation: ^4.3.0
   lottie: ^1.2.0
   modal_progress_hud_nsn: ^0.1.0-nullsafety-0
   path_provider: ^2.0.5
+  syncfusion_flutter_calendar: ^19.3.48
   table_calendar: ^3.0.2
 
 dev_dependencies:
+  build_runner: ^2.0.0
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,6 +78,18 @@ flutter:
     - assets/get_notified.json
     - assets/hist.json
     - assets/upcoming.json
+    - assets/monthImages/January.png
+    - assets/monthImages/February.png
+    - assets/monthImages/March.png
+    - assets/monthImages/April.png
+    - assets/monthImages/May.png
+    - assets/monthImages/June.png
+    - assets/monthImages/July.png
+    - assets/monthImages/August.png
+    - assets/monthImages/September.png
+    - assets/monthImages/October.png
+    - assets/monthImages/November.png
+    - assets/monthImages/December.png
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/models/notification_history_data.dart';
-import 'package:date_format/date_format.dart';
+import 'package:cs530_mobile/widgets/notification_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class NotificationHistory extends StatefulWidget {
@@ -46,69 +47,59 @@ class _NotificationHistoryState extends State<NotificationHistory> {
 
   @override
   Widget build(BuildContext context) {
+    double _w = MediaQuery.of(context).size.width;
     return ModalProgressHUD(
       inAsyncCall: _downloadNotificationDataCheck,
       child: RefreshIndicator(
         onRefresh: () => _getNotificationHistory(),
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text('NOTIFICATION HISTORY'),
+          appBar: CupertinoNavigationBar(
+            backgroundColor: Colors.deepPurple,
+            leading: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.navigate_before_outlined),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            middle: const Text(
+              'NOTIFICATION HISTORY',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-          body: ListView(
-            reverse: true,
-            shrinkWrap: true,
-            children: [
-              ..._notificationHistoryList.reversed.map((event) {
-                return Center(child: Tile(event));
-              }),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Tile extends StatelessWidget {
-  NotificationHistoryData ntData;
-
-  Tile(this.ntData, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4.0,
-      margin: const EdgeInsets.all(10.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-            child: Text(
-              formatDate(DateTime.parse(ntData.time),
-                  [mm, '-', dd, '-', yyyy, ' ', HH, ':', nn]).toString(),
-              style: const TextStyle(
-                color: Colors.grey,
-                wordSpacing: 5.0,
+          body: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: const [
+                0.1,
+                0.4,
+                0.6,
+                0.9,
+              ],
+              colors: [
+                Colors.indigo.shade300.withOpacity(.10),
+                Colors.deepPurple.shade300.withOpacity(.10),
+                Colors.indigo.shade300.withOpacity(.8),
+                Colors.deepPurple.shade300.withOpacity(.8),
+              ],
+            )),
+            child: AnimationLimiter(
+              child: ListView(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                reverse: true,
+                shrinkWrap: true,
+                children: [                  
+                  ..._notificationHistoryList.reversed.map((event) {
+                    return Center(child: NotificationTile(event,_notificationHistoryList.indexOf(event)));
+                  }),
+                ],
               ),
             ),
           ),
-          ListTile(
-            title: Text(ntData.title),
-            subtitle: Text(ntData.message),
-            isThreeLine: true,
-            leading: const CircleAvatar(
-                backgroundColor: Colors.blueGrey,
-                child: Icon(
-                  Icons.notifications_none_outlined,
-                  color: Colors.orange,
-                )),
-            trailing: const Icon(Icons.more_vert),
-          ),
-        ],
+        ),
       ),
     );
   }

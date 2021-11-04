@@ -1,0 +1,14 @@
+{
+  "id": "0701b84cbqc7li0bf97m50n9f7",
+  "summary": "Time to Vote",
+  "description": "Regular class time",
+  "startTime": "2021-11-02",
+  "endTime": "2021-11-02",
+  "notifications": ["123","456","678"],
+  "calendarId": "onlegoss@gmail.com",
+  "title": "Time to Vote",
+  "category": "allday",
+  "start": "2021-11-02",
+  "end": "2021-11-02",
+  "isAllDay": true
+}

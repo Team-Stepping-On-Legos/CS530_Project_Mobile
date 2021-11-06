@@ -238,68 +238,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     subscribedCategories: _getSavedCategoriesAsString())));
           },
           child: const HomeCardWidget(
-            assetName: 'upcoming',
-            name: 'UPCOMING\nEVENTS',
+            assetName: 'marking_calendar',
+            name: 'EVENTS\nCALENDAR',
           ),
         ),
         // ALL EVENTS
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CalendarPage(
-                      subscribedCategories: _getSavedCategoriesAsString(),
-                    )));
-          },
-          child: const HomeCardWidget(
-              assetName: 'marking_calendar', name: 'ALL\nEVENTS'),
-        ),
+        // GestureDetector(
+        //   onTap: () {
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //         builder: (context) => CalendarPage(
+        //               subscribedCategories: _getSavedCategoriesAsString(),
+        //             )));
+        //   },
+        //   child: const HomeCardWidget(
+        //       assetName: 'upcoming', name: 'ALL\nEVENTS'),
+        // ),
         // NOTIFICATION HISTORY
         GestureDetector(
           onTap: () {
-            HapticFeedback.lightImpact();
+            HapticFeedback.heavyImpact();
             //Here we will build the content of the dialog
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => NotificationHistory(
                       subscribedCategories: _getSavedCategoriesAsString(),
                     )));
           },
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(40), bottom: Radius.circular(40)),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Card(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                color: Colors.white38,
-                elevation: 10,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Lottie.asset(
-                      'assets/' + 'hist' + '.json',
-                      repeat: true,
-                      reverse: true,
-                      animate: true,
-                      height: 80,
-                      width: 120,
-                    ),
-                    Text(
-                      'NOTIFICATION\nHISTORY',
-                      style: GoogleFonts.robotoCondensed(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          child: const HomeCardWidget(
+            assetName: 'upcoming',
+            name: 'NOTIFICATION\nHISTORY',
           ),
         ),
       ],

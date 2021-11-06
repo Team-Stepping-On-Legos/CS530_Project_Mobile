@@ -90,10 +90,10 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
               0.9,
             ],
             colors: [
-              Colors.white.withOpacity(.15),
-              Colors.indigo.shade300.withOpacity(.5),
-              Colors.deepPurple.shade300.withOpacity(.5),
-              Colors.indigo.withOpacity(.15),
+              Colors.white.withOpacity(.01),
+              Colors.indigo.shade300.withOpacity(.3),
+              Colors.deepPurple.shade300.withOpacity(.3),
+              Colors.indigo.withOpacity(.01),
             ],
           )),
           child: SfCalendar(
@@ -118,7 +118,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                     fit: BoxFit.cover,
                     width: details.bounds.width,
                     height: details.bounds.height,
-                    color: Colors.white.withOpacity(0.4), 
+                    color: Colors.white.withOpacity(0.9), 
                     colorBlendMode: BlendMode.dstATop,),
                     Center(
                       child: AnimatedTextKit(

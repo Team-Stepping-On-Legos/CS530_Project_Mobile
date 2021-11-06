@@ -10,27 +10,10 @@ class HomeTopViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            stops: const [
-              0.1,
-              0.4,
-              0.6,
-              0.9,
-            ],
-            colors: [
-              Colors.white.withOpacity(.01),
-              Colors.indigo.shade300.withOpacity(.3),
-              Colors.deepPurple.shade300.withOpacity(.3),
-              Colors.indigo.withOpacity(.01),
-            ],
-          )),
       // color: Colors.transparent,
-      // decoration: const BoxDecoration(        
-      //     image: DecorationImage(
-      //         image: AssetImage("assets/bg.jpg"), fit: BoxFit.fill)),
+      decoration: const BoxDecoration(        
+          image: DecorationImage(
+              image: AssetImage("assets/bg.jpg"), fit: BoxFit.fill)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

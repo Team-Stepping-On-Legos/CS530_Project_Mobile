@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
       title: 'VOLUNTARY SPAM APP',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
-        secondaryHeaderColor: Colors.white,
+        secondaryHeaderColor: Colors.black87,
       ),
       home: const SplashScreen(),
     );

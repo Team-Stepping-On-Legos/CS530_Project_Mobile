@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
+import 'package:cs530_mobile/views/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -20,6 +23,7 @@ class UpcomingViewCalendar extends StatefulWidget {
 }
 
 class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
+
   bool _downloadCalendarItemsDataCheck = true;
   List<CalendarItem> _calendarItemsList = [];
 
@@ -59,6 +63,18 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
             'UPCOMING EVENTS',
             style: TextStyle(color: Colors.white),
           ),
+          trailing: IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.calendar_view_month_outlined),
+            onPressed: ()  {
+              HapticFeedback.heavyImpact();
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => CalendarPage(
+                      subscribedCategories: widget.subscribedCategories,
+                    )));
+            },
+          ),
         ),
         body: Container(
           width: MediaQuery.of(context).size.width,
@@ -89,12 +105,21 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                 final String monthName = _getMonthDate(details.date.month);
                 return Stack(
                   children: [
+                  //   Lottie.asset(
+                  //     'assets/monthImages/background_month.json',
+                  //     repeat: true,
+                  //     animate: true,
+                  //     height: details.bounds.height,
+                  //     width: details.bounds.width,
+                  //   ),
                     Image(
-                        image: ExactAssetImage(
-                            'assets/monthImages/' + monthName + '.png'),
-                        fit: BoxFit.cover,
-                        width: details.bounds.width,
-                        height: details.bounds.height),
+                    image: ExactAssetImage(
+                        'assets/monthImages/' + monthName + '.png'),
+                    fit: BoxFit.cover,
+                    width: details.bounds.width,
+                    height: details.bounds.height,
+                    color: Colors.white.withOpacity(0.4), 
+                    colorBlendMode: BlendMode.dstATop,),
                     Center(
                       child: AnimatedTextKit(
                         animatedTexts: [
@@ -111,7 +136,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                             speed: const Duration(milliseconds: 200),
                           ),
                         ],
-                        totalRepeatCount: 2,
+                        totalRepeatCount: 1,
                         pause: const Duration(milliseconds: 1000),
                         displayFullTextOnTap: true,
                         stopPauseOnTap: true,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
@@ -205,39 +206,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               assetName: 'get_notified', name: 'GET\nNOTIFIED'),
         ),
         // UPCOMING EVENTS
-        GestureDetector(onTap: () {
-          //   showDialog(
-          //       context: context,
-          //       builder: (BuildContext context) {
-          //         //Here we will build the content of the dialog
-          //         return AlertDialog(
-          //           title: const Text("UPCOMING EVENTS"),
-          //           content: Lottie.asset(
-          //             'assets/404.json',
-          //             repeat: true,
-          //             reverse: true,
-          //             animate: true,
-          //             height: 120,
-          //             width: 120,
-          //           ),
-          //           actions: <Widget>[
-          //             TextButton(
-          //               child: const Text("OK"),
-          //               onPressed: () async {
-          //                 Navigator.of(context).pop();
-          //               },
-          //             )
-          //           ],
-          //         );
-          //       });
-          // }
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => UpcomingViewCalendar( subscribedCategories: _getSavedCategoriesAsString())));
-        },
+        GestureDetector(
+          onTap: () {
+            //   showDialog(
+            //       context: context,
+            //       builder: (BuildContext context) {
+            //         //Here we will build the content of the dialog
+            //         return AlertDialog(
+            //           title: const Text("UPCOMING EVENTS"),
+            //           content: Lottie.asset(
+            //             'assets/404.json',
+            //             repeat: true,
+            //             reverse: true,
+            //             animate: true,
+            //             height: 120,
+            //             width: 120,
+            //           ),
+            //           actions: <Widget>[
+            //             TextButton(
+            //               child: const Text("OK"),
+            //               onPressed: () async {
+            //                 Navigator.of(context).pop();
+            //               },
+            //             )
+            //           ],
+            //         );
+            //       });
+            // }
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UpcomingViewCalendar(
+                    subscribedCategories: _getSavedCategoriesAsString())));
+          },
           child: const HomeCardWidget(
             assetName: 'upcoming',
             name: 'UPCOMING\nEVENTS',
-          ),),
+          ),
+        ),
         // ALL EVENTS
         GestureDetector(
           onTap: () {
@@ -259,8 +263,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       subscribedCategories: _getSavedCategoriesAsString(),
                     )));
           },
-          child: const HomeCardWidget(
-              assetName: 'hist', name: 'NOTIFICATION\nHISTORY'),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(40), bottom: Radius.circular(40)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Card(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                color: Colors.white38,
+                elevation: 10,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Lottie.asset(
+                      'assets/' + 'hist' + '.json',
+                      repeat: true,
+                      reverse: true,
+                      animate: true,
+                      height: 80,
+                      width: 120,
+                    ),
+                    Text(
+                      'NOTIFICATION\nHISTORY',
+                      style: GoogleFonts.robotoCondensed(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );

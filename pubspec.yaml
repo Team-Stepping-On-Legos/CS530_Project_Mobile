@@ -73,6 +73,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/subscriber.json
+    - assets/subscribe.json
     - assets/marking_calendar.json
     - assets/bg.jpg
     - assets/404.json

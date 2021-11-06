@@ -26,10 +26,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool downloadCategoriesCheck = true;
-
+  late AnimationController _animationController;
   @override
   initState() {
     super.initState();
+
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
 
     _getSavedCategories();
 
@@ -91,7 +94,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
             actions: <Widget>[
               TextButton(
-                child: const Text("SUBSCRIBE"),
+                child: Lottie.asset(
+                    'assets/subscribe.json',
+                    repeat: false,
+                    reverse: false,
+                    animate: false,
+                    height: 100,
+                    width: 150,    
+                    controller: _animationController,            
+                  ),
                 onPressed: () async {
                   FBM fbm = FBM();
                   for (var item in categoryList) {
@@ -99,6 +110,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   }
                   fbm.subscribeTopics(selectedCategoryList);
                   await writeContent("categories", selectedCategoryList);
+
+                  _animationController.forward();
+                  await Future.delayed(const Duration(seconds: 2), (){});  
+                _animationController.reverse();
                   Navigator.of(context).pop();
                 },
               )
@@ -196,18 +211,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       crossAxisSpacing: 1,
       mainAxisSpacing: 1,
       crossAxisCount: 2,
-      children: <Widget>[
-        // GET NOTIFIED
+      children: <Widget>[    
+        // NOTIFICATION HISTORY
         GestureDetector(
           onTap: () {
-            _showDialogCategories();
+            HapticFeedback.heavyImpact();
+            //Here we will build the content of the dialog
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => NotificationHistory(
+                      subscribedCategories: _getSavedCategoriesAsString(),
+                    )));
           },
           child: const HomeCardWidget(
-              assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+            assetName: 'upcoming',
+            name: 'NOTIFICATION\nHISTORY',
+          ),
         ),
         // UPCOMING EVENTS
         GestureDetector(
           onTap: () {
+            HapticFeedback.heavyImpact();
             //   showDialog(
             //       context: context,
             //       builder: (BuildContext context) {
@@ -242,6 +265,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             name: 'EVENTS\nCALENDAR',
           ),
         ),
+        // GET NOTIFIED
+        GestureDetector(
+          onTap: () {
+            HapticFeedback.heavyImpact();
+            _showDialogCategories();
+          },
+          child: const HomeCardWidget(
+              assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+        ),
         // ALL EVENTS
         // GestureDetector(
         //   onTap: () {
@@ -253,21 +285,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         //   child: const HomeCardWidget(
         //       assetName: 'upcoming', name: 'ALL\nEVENTS'),
         // ),
-        // NOTIFICATION HISTORY
-        GestureDetector(
-          onTap: () {
-            HapticFeedback.heavyImpact();
-            //Here we will build the content of the dialog
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => NotificationHistory(
-                      subscribedCategories: _getSavedCategoriesAsString(),
-                    )));
-          },
-          child: const HomeCardWidget(
-            assetName: 'upcoming',
-            name: 'NOTIFICATION\nHISTORY',
-          ),
-        ),
+        
       ],
     );
   }

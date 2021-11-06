@@ -86,10 +86,10 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
             ],
           )),
           child: SfCalendar(
-            headerStyle: const CalendarHeaderStyle(
+            headerStyle: const CalendarHeaderStyle(            
                 textStyle: TextStyle(
-                    color: Colors.black, fontSize: 18, letterSpacing: 1.5),
-                backgroundColor: Color.fromARGB(10, 10, 10, 10)),
+                    color: Colors.black, fontSize: 16, letterSpacing: 1.5,),
+                backgroundColor: Colors.transparent),
             backgroundColor: Colors.transparent,
             dataSource: _getCalendarDataSource(_calendarItemsList),
             onTap: calendarTapped,
@@ -281,17 +281,17 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
           // message: const Text('Message'),
           actions: <CupertinoActionSheetAction>[
             CupertinoActionSheetAction(
-              child: const Text('Mute'),
+              child: const Text('Open'),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             CupertinoActionSheetAction(
-              child: const Text('Open'),
+              child: const Text('Mute'),
               onPressed: () {
                 Navigator.pop(context);
               },
-            )
+            ),
           ],
         ),
       );

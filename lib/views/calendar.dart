@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
+import 'package:cs530_mobile/views/upcoming_events.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -117,7 +119,18 @@ class _CalendarPageState extends State<CalendarPage> {
             'SUBSCRIBED EVENTS',
             style: TextStyle(color: Colors.white),
           ),
-        ),
+          trailing: IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.list_outlined),
+            onPressed: ()  {
+              HapticFeedback.heavyImpact();
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UpcomingViewCalendar(
+                      subscribedCategories: widget.subscribedCategories,
+                    )));
+            },
+        ),),
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,

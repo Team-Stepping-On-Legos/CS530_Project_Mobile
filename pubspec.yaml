@@ -78,6 +78,8 @@ flutter:
     - assets/get_notified.json
     - assets/hist.json
     - assets/upcoming.json
+    - assets/notification_bell.json
+    - assets/monthImages/background_month.json
     - assets/monthImages/January.png
     - assets/monthImages/February.png
     - assets/monthImages/March.png

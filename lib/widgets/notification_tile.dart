@@ -2,6 +2,7 @@ import 'package:cs530_mobile/models/notification_history_data.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:lottie/lottie.dart';
 
 class NotificationTile extends StatelessWidget {
   NotificationHistoryData ntData;
@@ -49,7 +50,7 @@ class NotificationTile extends StatelessWidget {
                     ]).toString(),
                     style: const TextStyle(
                       color: Colors.grey,
-                      wordSpacing: 5.0,
+                      letterSpacing: 1.0,
                     ),
                   ),
                 ),
@@ -57,12 +58,13 @@ class NotificationTile extends StatelessWidget {
                   title: Text(ntData.title),
                   subtitle: Text(ntData.message),
                   isThreeLine: true,
-                  leading: const CircleAvatar(
-                      backgroundColor: Colors.orange,
-                      child: Icon(
-                        Icons.message_outlined,
-                        color: Colors.white,
-                      )),
+                  leading:  Lottie.asset(
+                      'assets/notification_bell.json',
+                      repeat: true,                  
+                      animate: true,
+                      height: 150,
+                      width: 50,
+                    ),
                   trailing: const Icon(Icons.more_vert),
                 ),
               ],

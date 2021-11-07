@@ -10,7 +10,7 @@ class HomeTopViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.deepPurple,
+      // color: Colors.transparent,
       decoration: const BoxDecoration(        
           image: DecorationImage(
               image: AssetImage("assets/bg.jpg"), fit: BoxFit.fill)),

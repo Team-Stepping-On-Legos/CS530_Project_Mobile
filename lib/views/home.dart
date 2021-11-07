@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/category_data.dart';
-import 'package:cs530_mobile/views/calendar.dart';
 import 'package:cs530_mobile/views/notification_history.dart';
 import 'package:cs530_mobile/views/upcoming_events.dart';
 import 'package:cs530_mobile/widgets/home_card.dart';
@@ -25,10 +25,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool downloadCategoriesCheck = true;
-
+  late AnimationController _animationController;
   @override
   initState() {
     super.initState();
+
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2000));
 
     _getSavedCategories();
 
@@ -69,17 +72,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           List<String> selectedCategoryList = [];
           //Here we will build the content of the dialog
           return AlertDialog(
-            title: const Text("CATEGORIES"),
+            backgroundColor: Colors.grey.withAlpha(20),
+            title: Text(
+              "CATEGORIES",
+              style: GoogleFonts.robotoCondensed(
+                  color: Colors.white.withOpacity(1),
+                  fontSize: 20,
+                  letterSpacing: 1.6,
+                  fontWeight: FontWeight.w400),
+            ),
             content: categoryList.isNotEmpty
-                ? MultiSelectChip(
-                    categoryList,
-                    readCategoryList,
-                    onSelectionChanged: (selectedList) {
-                      setState(() {
-                        selectedCategoryList = selectedList;
-                      });
-                    },
-                  )
+                ? Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(
+                      'assets/groucy_lady.json',
+                      repeat: true,
+                      reverse: true,
+                      animate: true,
+                      height: 150,
+                      width: 150,
+                    ),
+                    MultiSelectChip(
+                      categoryList,
+                      readCategoryList,
+                      onSelectionChanged: (selectedList) {
+                        setState(() {
+                          selectedCategoryList = selectedList;
+                        });
+                      },
+                    ),                    
+                  ],
+                )                
                 : Lottie.asset(
                     'assets/404.json',
                     repeat: true,
@@ -90,14 +115,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
             actions: <Widget>[
               TextButton(
-                child: const Text("SUBSCRIBE"),
+                child: Lottie.asset(
+                  'assets/subscribe.json',
+                  repeat: false,
+                  reverse: false,
+                  animate: false,
+                  height: 100,
+                  width: 150,
+                  controller: _animationController,
+                ),
                 onPressed: () async {
                   FBM fbm = FBM();
                   for (var item in categoryList) {
-                    fbm.unSubscribeTopic(item.name);
+                fbm.unSubscribeTopic(item.name);
                   }
                   fbm.subscribeTopics(selectedCategoryList);
                   await writeContent("categories", selectedCategoryList);
+
+                  _animationController.forward();
+                  await Future.delayed(const Duration(seconds: 2), () {});
+                  _animationController.reverse();
                   Navigator.of(context).pop();
                 },
               )
@@ -196,63 +233,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       mainAxisSpacing: 1,
       crossAxisCount: 2,
       children: <Widget>[
-        // GET NOTIFIED
-        GestureDetector(
-          onTap: () {
-            _showDialogCategories();
-          },
-          child: const HomeCardWidget(
-              assetName: 'get_notified', name: 'GET\nNOTIFIED'),
-        ),
-        // UPCOMING EVENTS
-        GestureDetector(onTap: () {
-          //   showDialog(
-          //       context: context,
-          //       builder: (BuildContext context) {
-          //         //Here we will build the content of the dialog
-          //         return AlertDialog(
-          //           title: const Text("UPCOMING EVENTS"),
-          //           content: Lottie.asset(
-          //             'assets/404.json',
-          //             repeat: true,
-          //             reverse: true,
-          //             animate: true,
-          //             height: 120,
-          //             width: 120,
-          //           ),
-          //           actions: <Widget>[
-          //             TextButton(
-          //               child: const Text("OK"),
-          //               onPressed: () async {
-          //                 Navigator.of(context).pop();
-          //               },
-          //             )
-          //           ],
-          //         );
-          //       });
-          // }
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => UpcomingViewCalendar( subscribedCategories: _getSavedCategoriesAsString())));
-        },
-          child: const HomeCardWidget(
-            assetName: 'upcoming',
-            name: 'UPCOMING\nEVENTS',
-          ),),
-        // ALL EVENTS
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CalendarPage(
-                      subscribedCategories: _getSavedCategoriesAsString(),
-                    )));
-          },
-          child: const HomeCardWidget(
-              assetName: 'marking_calendar', name: 'ALL\nEVENTS'),
-        ),
         // NOTIFICATION HISTORY
         GestureDetector(
           onTap: () {
-            HapticFeedback.lightImpact();
+            HapticFeedback.heavyImpact();
             //Here we will build the content of the dialog
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => NotificationHistory(
@@ -260,8 +244,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     )));
           },
           child: const HomeCardWidget(
-              assetName: 'hist', name: 'NOTIFICATION\nHISTORY'),
+            assetName: 'upcoming',
+            name: 'NOTIFICATION\nHISTORY',
+          ),
         ),
+        // UPCOMING EVENTS
+        GestureDetector(
+          onTap: () {
+            HapticFeedback.heavyImpact();
+            //   showDialog(
+            //       context: context,
+            //       builder: (BuildContext context) {
+            //         //Here we will build the content of the dialog
+            //         return AlertDialog(
+            //           title: const Text("UPCOMING EVENTS"),
+            //           content: Lottie.asset(
+            //             'assets/404.json',
+            //             repeat: true,
+            //             reverse: true,
+            //             animate: true,
+            //             height: 120,
+            //             width: 120,
+            //           ),
+            //           actions: <Widget>[
+            //             TextButton(
+            //               child: const Text("OK"),
+            //               onPressed: () async {
+            //                 Navigator.of(context).pop();
+            //               },
+            //             )
+            //           ],
+            //         );
+            //       });
+            // }
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UpcomingViewCalendar(
+                    subscribedCategories: _getSavedCategoriesAsString())));
+          },
+          child: const HomeCardWidget(
+            assetName: 'marking_calendar',
+            name: 'EVENTS\nCALENDAR',
+          ),
+        ),
+        // GET NOTIFIED
+        GestureDetector(
+          onTap: () {
+            HapticFeedback.heavyImpact();
+            _showDialogCategories();
+          },
+          child: const HomeCardWidget(
+              assetName: 'get_notified', name: 'GET\nNOTIFIED'),
+        ),
+        // ALL EVENTS
+        // GestureDetector(
+        //   onTap: () {
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //         builder: (context) => CalendarPage(
+        //               subscribedCategories: _getSavedCategoriesAsString(),
+        //             )));
+        //   },
+        //   child: const HomeCardWidget(
+        //       assetName: 'upcoming', name: 'ALL\nEVENTS'),
+        // ),
       ],
     );
   }
@@ -291,7 +335,16 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
       choices.add(Container(
         padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
-          label: Text(item.name),
+          selectedColor: Colors.red.withOpacity(0.1),
+          backgroundColor: Colors.transparent.withAlpha(300),
+          label: Text(
+            item.name.toUpperCase(),
+            style: TextStyle(
+                letterSpacing: 1.0,
+                color: selectedChoices.contains(item.name)
+                    ? Colors.deepPurple
+                    : Colors.black26),
+          ),
           selected: selectedChoices.contains(item.name),
           onSelected: (selected) {
             setState(() {

@@ -58,9 +58,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   _getSavedCategories() {
-    readContent("categories").then((String value) {
+    readContent("categories").then((String? value) {
       setState(() {
-        readCategoryList = jsonDecode(value);
+        if(value!=null){
+          readCategoryList = jsonDecode(value);
+        }
       });
     });
   }
@@ -82,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   fontWeight: FontWeight.w400),
             ),
             content: categoryList.isNotEmpty
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                ? Column(                  
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Lottie.asset(
@@ -93,6 +94,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       animate: true,
                       height: 150,
                       width: 150,
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     MultiSelectChip(
                       categoryList,

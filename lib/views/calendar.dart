@@ -79,10 +79,10 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   prefsData() async {
-    readContent("events").then((String value) {
+    readContent("events").then((String? value) {
       setState(() {
         _events = Map<DateTime, List<CalendarItem>>.from(
-            decodeMap(jsonDecode(value)));
+            decodeMap(jsonDecode(value??'')));
       });
     });
   }

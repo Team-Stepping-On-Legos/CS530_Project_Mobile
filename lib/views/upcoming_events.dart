@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
+import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
 import 'package:cs530_mobile/views/calendar.dart';
-import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class UpcomingViewCalendar extends StatefulWidget {
@@ -24,9 +26,12 @@ class UpcomingViewCalendar extends StatefulWidget {
   _UpcomingViewCalendarState createState() => _UpcomingViewCalendarState();
 }
 
-class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
+class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
+    with TickerProviderStateMixin {
   bool _downloadCalendarItemsDataCheck = true;
   List<CalendarItem> _calendarItemsList = [];
+  List<dynamic> _mutedEventsList = [];
+  bool isMuted = false;
 
   Future<void> _getCalendarItems() async {
     return API.getCalendarItems(widget.subscribedCategories).then((response) {
@@ -41,11 +46,22 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
   @override
   void initState() {
     super.initState();
+    _getMutedEvents();
     _getCalendarItems().then((value) => {
           setState(() {
             _downloadCalendarItemsDataCheck = false;
           })
         });
+  }
+
+  _getMutedEvents() async {
+    readContent("mutedevents").then((String? value) {
+      setState(() {
+        if (value != null) {
+          _mutedEventsList = jsonDecode(value);
+        }
+      });
+    });
   }
 
   @override
@@ -86,9 +102,12 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
             ],
           )),
           child: SfCalendar(
-            headerStyle: const CalendarHeaderStyle(            
+            headerStyle: const CalendarHeaderStyle(
                 textStyle: TextStyle(
-                    color: Colors.black, fontSize: 16, letterSpacing: 1.5,),
+                  color: Colors.black,
+                  fontSize: 16,
+                  letterSpacing: 1.5,
+                ),
                 backgroundColor: Colors.transparent),
             backgroundColor: Colors.transparent,
             dataSource: _getCalendarDataSource(_calendarItemsList),
@@ -205,9 +224,9 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
     }
   }
 
-  String? _apptID = '',      
+  String? _apptID = '',
       _apptTitle = '',
-      _apptDescription = '',     
+      _apptDescription = '',
       _startTimeText = '',
       _endTimeText = '',
       _dateText = '',
@@ -217,7 +236,17 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
     if (details.targetElement == CalendarElement.appointment ||
         details.targetElement == CalendarElement.agenda) {
       final Appointment appointmentDetails = details.appointments![0];
+
       _apptID = appointmentDetails.id.toString();
+
+      setState(() {
+        if (_mutedEventsList != null) {
+          _mutedEventsList.contains(_apptID) ? isMuted = true : isMuted = false;
+        } else {
+          isMuted = false;
+        }
+      });
+
       _apptTitle = appointmentDetails.subject;
       _apptDescription = appointmentDetails.notes ?? '';
       _dateText = DateFormat('MMMM dd, yyyy')
@@ -235,16 +264,27 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
       showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) => CupertinoActionSheet(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '$_apptTitle',
-                style: const TextStyle(
-                    textBaseline: TextBaseline.ideographic,
-                    fontSize: 22,
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$_apptTitle',
+                    style: const TextStyle(
+                        fontSize: 22,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  isMuted?Image.asset('assets/notification_off.png', height: 25, width: 25,):
+                  Image.asset('assets/notification_on.png', height: 25, width: 25)
+                ],
               ),
             ],
           ),
@@ -287,8 +327,32 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
               },
             ),
             CupertinoActionSheetAction(
-              child: const Text('Mute'),
-              onPressed: () {
+              child: isMuted
+                  ? const Text(
+                      'Unmute Event',
+                      style: TextStyle(color: Colors.blue),
+                    )
+                  : const Text(
+                      'Mute Event',
+                      style: TextStyle(color: Colors.red),
+                    ),
+              onPressed: () async {
+                isMuted
+                    ? setState(() {
+                        isMuted = false;
+                        if (_mutedEventsList != null) {
+                          _mutedEventsList.remove(_apptID);
+                        }
+                      })
+                    : setState(() {
+                        isMuted = true;
+                        if (_apptID != null) {
+                          _mutedEventsList.add(_apptID!);
+                          // print("MUTING $_apptID");
+                        }
+                      });
+
+                await writeContent("mutedevents", _mutedEventsList);
                 Navigator.pop(context);
               },
             ),

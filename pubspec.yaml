@@ -74,6 +74,7 @@ flutter:
   assets:
     - assets/subscriber.json
     - assets/subscribe.json
+    - assets/exit.json
     - assets/notification_on.png
     - assets/notification_off.png
     - assets/groucy_lady.json

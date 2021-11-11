@@ -22,7 +22,7 @@ class HomeCardWidget extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),),
-          color: Colors.white38,
+          color: Colors.white.withAlpha(50),
           elevation: 10,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

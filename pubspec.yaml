@@ -31,7 +31,6 @@ dependencies:
   avatar_glow: ^2.0.1
   cloud_firestore: ^2.5.3
   cupertino_icons: ^1.0.2
-  cupertino_list_tile: ^0.2.0
   date_format: ^2.0.4
   firebase_analytics: ^8.3.2
   firebase_auth: ^3.1.1
@@ -47,6 +46,7 @@ dependencies:
   lottie: ^1.2.0
   modal_progress_hud_nsn: ^0.1.0-nullsafety-0
   path_provider: ^2.0.5
+  shared_preferences: ^2.0.8
   syncfusion_flutter_calendar: ^19.3.48
   table_calendar: ^3.0.2
 
@@ -74,6 +74,9 @@ flutter:
   assets:
     - assets/subscriber.json
     - assets/subscribe.json
+    - assets/exit.json
+    - assets/notification_on.png
+    - assets/notification_off.png
     - assets/groucy_lady.json
     - assets/marking_calendar.json
     - assets/bg.jpg

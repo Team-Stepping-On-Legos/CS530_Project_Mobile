@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
@@ -58,9 +59,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   _getSavedCategories() {
-    readContent("categories").then((String value) {
+    readContent("categories").then((String? value) {
       setState(() {
-        readCategoryList = jsonDecode(value);
+        if(value!=null){
+          readCategoryList = jsonDecode(value);
+        }
       });
     });
   }
@@ -70,75 +73,88 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         context: context,
         builder: (BuildContext context) {
           List<String> selectedCategoryList = [];
+          if(readCategoryList.isNotEmpty){
+            for (var element in readCategoryList) {selectedCategoryList.add(element);}
+          }
           //Here we will build the content of the dialog
-          return AlertDialog(
-            backgroundColor: Colors.grey.withAlpha(20),
-            title: Text(
-              "CATEGORIES",
-              style: GoogleFonts.robotoCondensed(
-                  color: Colors.white.withOpacity(1),
-                  fontSize: 20,
-                  letterSpacing: 1.6,
-                  fontWeight: FontWeight.w400),
-            ),
-            content: categoryList.isNotEmpty
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Lottie.asset(
-                      'assets/groucy_lady.json',
-                      repeat: true,
-                      reverse: true,
-                      animate: true,
-                      height: 150,
-                      width: 150,
-                    ),
-                    MultiSelectChip(
-                      categoryList,
-                      readCategoryList,
-                      onSelectionChanged: (selectedList) {
-                        setState(() {
-                          selectedCategoryList = selectedList;
-                        });
-                      },
-                    ),                    
-                  ],
-                )                
-                : Lottie.asset(
-                    'assets/404.json',
-                    repeat: true,
-                    reverse: true,
-                    animate: true,
-                    height: 150,
-                    width: 150,
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+                color: Colors.grey.withAlpha(20),
+              child: AlertDialog(
+                backgroundColor: Colors.grey.withAlpha(20),
+                title: Center(
+                  child: Text(
+                    "CATEGORIES",
+                    style: GoogleFonts.robotoCondensed(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 28,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w600),
                   ),
-            actions: <Widget>[
-              TextButton(
-                child: Lottie.asset(
-                  'assets/subscribe.json',
-                  repeat: false,
-                  reverse: false,
-                  animate: false,
-                  height: 100,
-                  width: 150,
-                  controller: _animationController,
                 ),
-                onPressed: () async {
-                  FBM fbm = FBM();
-                  for (var item in categoryList) {
-                fbm.unSubscribeTopic(item.name);
-                  }
-                  fbm.subscribeTopics(selectedCategoryList);
-                  await writeContent("categories", selectedCategoryList);
-
-                  _animationController.forward();
-                  await Future.delayed(const Duration(seconds: 2), () {});
-                  _animationController.reverse();
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
+                content: categoryList.isNotEmpty
+                    ? Column(                  
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Lottie.asset(
+                          'assets/groucy_lady.json',
+                          repeat: true,
+                          reverse: true,
+                          animate: true,
+                          height: 150,
+                          width: 150,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        MultiSelectChip(
+                          categoryList,
+                          readCategoryList,
+                          onSelectionChanged: (selectedList) {
+                            setState(() {
+                              selectedCategoryList = selectedList;
+                            });
+                          },
+                        ),                    
+                      ],
+                    )                
+                    : Lottie.asset(
+                        'assets/404.json',
+                        repeat: true,
+                        reverse: true,
+                        animate: true,
+                        height: 150,
+                        width: 150,
+                      ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Lottie.asset(
+                      'assets/subscribe.json',
+                      repeat: false,
+                      reverse: false,
+                      animate: false,
+                      height: 100,
+                      width: 150,
+                      controller: _animationController,
+                    ),
+                    onPressed: () async {
+                      FBM fbm = FBM();
+                      for (var item in categoryList) {
+                    fbm.unSubscribeTopic(item.name);
+                      }
+                      fbm.subscribeTopics(selectedCategoryList);
+                      await writeContent("categories", selectedCategoryList);
+          
+                      _animationController.forward();
+                      await Future.delayed(const Duration(seconds: 2), () {});
+                      _animationController.reverse();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ),
+            ),
           );
         });
   }
@@ -295,6 +311,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: const HomeCardWidget(
               assetName: 'get_notified', name: 'GET\nNOTIFIED'),
         ),
+        // EXIT
+        GestureDetector(
+          onTap: () {
+            HapticFeedback.heavyImpact();
+            exit(0);
+          },
+          child: const HomeCardWidget(
+              assetName: 'exit', name: 'EXIT\nAPP'),
+        ),
+
         // ALL EVENTS
         // GestureDetector(
         //   onTap: () {

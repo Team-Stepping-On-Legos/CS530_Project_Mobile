@@ -6,6 +6,7 @@ import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
 import 'package:cs530_mobile/views/calendar.dart';
+import 'package:cs530_mobile/views/event_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -231,6 +232,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       _endTimeText = '',
       _dateText = '',
       _timeDetails = '';
+  CalendarItem cli = CalendarItem();
 
   void calendarTapped(CalendarTapDetails details) {
     if (details.targetElement == CalendarElement.appointment ||
@@ -238,6 +240,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       final Appointment appointmentDetails = details.appointments![0];
 
       _apptID = appointmentDetails.id.toString();
+      cli.id = appointmentDetails.id.toString();
 
       setState(() {
         if (_mutedEventsList != null) {
@@ -248,7 +251,14 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       });
 
       _apptTitle = appointmentDetails.subject;
+      cli.title = appointmentDetails.subject;
+
       _apptDescription = appointmentDetails.notes ?? '';
+      cli.description = appointmentDetails.notes ?? '';
+      cli.startTime = appointmentDetails.startTime;
+      cli.endTime = appointmentDetails.endTime;
+      cli.title = appointmentDetails.subject;
+
       _dateText = DateFormat('MMMM dd, yyyy')
           .format(appointmentDetails.startTime)
           .toString();
@@ -282,8 +292,14 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  isMuted?Image.asset('assets/notification_off.png', height: 25, width: 25,):
-                  Image.asset('assets/notification_on.png', height: 25, width: 25)
+                  isMuted
+                      ? Image.asset(
+                          'assets/notification_off.png',
+                          height: 25,
+                          width: 25,
+                        )
+                      : Image.asset('assets/notification_on.png',
+                          height: 25, width: 25)
                 ],
               ),
             ],
@@ -324,6 +340,8 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
               child: const Text('Open'),
               onPressed: () {
                 Navigator.pop(context);
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => EventDetail(cli)));
               },
             ),
             CupertinoActionSheetAction(
@@ -371,11 +389,11 @@ class DataSource extends CalendarDataSource {
 
 DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
   List<Appointment> appointments = <Appointment>[];
-  for (var cli in _calendarItemsList) {
+  for (var cli in _calendarItemsList) { 
     appointments.add(Appointment(
         id: cli.id,
-        startTime: cli.startTime ?? DateTime.now(),
-        endTime: cli.endTime ?? DateTime.now().add(const Duration(minutes: 1)),
+        startTime: _getLocalTime(cli.startTime?? DateTime.now()) ,
+        endTime: _getLocalTime(cli.endTime ?? DateTime.now().add(const Duration(minutes: 1))),
         isAllDay: cli.isAllDay ?? false,
         subject: cli.summary ?? '',
         notes: cli.description ?? '',
@@ -385,4 +403,13 @@ DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
   }
 
   return DataSource(appointments);
+}
+
+DateTime _getLocalTime(DateTime dt){
+    var dateUtc = dt;
+    var strToDateTime = DateTime.parse(dateUtc.toString());
+    final convertLocal = strToDateTime.toLocal();
+    // var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
+    // String dateLocal = newFormat.format(convertLocal);
+    return convertLocal;
 }

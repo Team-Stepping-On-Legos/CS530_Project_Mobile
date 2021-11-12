@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^3.1.1
   firebase_core: ^1.6.0
   firebase_messaging: ^10.0.7
+  flip_panel: ^1.0.1
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.9.2

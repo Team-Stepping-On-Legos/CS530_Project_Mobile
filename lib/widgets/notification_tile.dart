@@ -2,6 +2,7 @@ import 'package:cs530_mobile/models/notification_history_data.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -12,6 +13,13 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+  var dateUtc = ntData.time;
+  var strToDateTime = DateTime.parse(dateUtc.toString());
+  final convertLocal = strToDateTime.toLocal();
+  var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
+  String dateLocal = newFormat.format(convertLocal);
+
     return AnimationConfiguration.staggeredList(
       position: n,
       delay: const Duration(milliseconds: 20),
@@ -35,19 +43,7 @@ class NotificationTile extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0, right: 10.0),
                   child: Text(
-                    formatDate(DateTime.parse(ntData.time), [
-                      mm,
-                      '-',
-                      dd,
-                      '-',
-                      yyyy,
-                      ' ',
-                      hh,
-                      ':',
-                      nn,
-                      ' ',
-                      am
-                    ]).toString(),
+                   dateLocal.toString(),
                     style: const TextStyle(
                       color: Colors.grey,
                       letterSpacing: 1.0,
@@ -58,14 +54,17 @@ class NotificationTile extends StatelessWidget {
                   title: Text(ntData.title),
                   subtitle: Text(ntData.message),
                   isThreeLine: true,
-                  leading:  Lottie.asset(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Lottie.asset(
                       'assets/notification_bell.json',
-                      repeat: true,                  
+                      repeat: true,
                       animate: true,
-                      height: 150,
+                      height: 50,
                       width: 50,
                     ),
-                  trailing: const Icon(Icons.more_vert),
+                  ),
+                  // trailing: const Icon(Icons.more_vert),
                 ),
               ],
             ),

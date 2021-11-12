@@ -31,7 +31,7 @@ class NotificationTile extends StatelessWidget {
           horizontalOffset: -300,
           verticalOffset: -250,
           curve: Curves.easeInCubic,
-          child: Card(
+          child: Card(                    
             elevation: 4.0,
             margin: const EdgeInsets.all(10.0),
             shape: RoundedRectangleBorder(

@@ -85,20 +85,32 @@ class _MyAppState extends State<MyApp> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
+            bool eventFound = false;
+            CalendarItem cl = CalendarItem();
+            for (var element in _calendarItemsList) {
+              if (message.data['eventId'] == element.id) {
+                eventFound = true;
+                cl = element;
+              }
+            }
             return AlertDialog(
               title: Text(message.notification!.title!),
               content: Text(message.notification!.body!),
               actions: [
                 TextButton(
-                  child: const Text("VIEW"),
+                  child: eventFound
+                        ? const Text("VIEW"): const Text("CLOSE"),
                   onPressed: () {
-                    for (var element in _calendarItemsList) {
-                      if (message.data['eventId'] == element.id) {
-                        Navigator.pop(context);
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EventDetail(element, false)));
-                      }
-                    }
+                    eventFound
+                        ? (){
+                          print(cl.id);
+                          print(eventFound);
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      EventDetail(cl, false)));
+                            }
+                        : Navigator.of(context).pop();
                   },
                 )
               ],
@@ -124,7 +136,6 @@ class _MyAppState extends State<MyApp> {
       });
       print('Message clicked!');
     });
-    
   }
 
   @override

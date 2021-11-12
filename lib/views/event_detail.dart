@@ -1,4 +1,5 @@
 import 'package:cs530_mobile/models/calendar_item.dart';
+import 'package:cs530_mobile/widgets/notification_tile.dart';
 import 'package:flip_panel/flip_panel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -231,7 +232,38 @@ class _EventDetailState extends State<EventDetail> {
                 color: Colors.grey,
                 letterSpacing: 1.0,
               ),
-            )
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            const Text(
+              'NOTIFICATION HISTORY: ',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey,
+                letterSpacing: 1.0,
+              ),
+            ),
+            widget.calendarItem.notifications?.isEmpty ?? true
+                ? const SizedBox(
+                    height: 0,
+                  )
+                : ListView(
+                    physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics()),
+                    reverse: true,
+                    shrinkWrap: true,
+                    children: [
+                      ...widget.calendarItem.notifications!.reversed
+                          .map((event) {
+                        return Center(
+                            child: NotificationTile(
+                                event,
+                                widget.calendarItem.notifications!
+                                    .indexOf(event)));
+                      }),
+                    ],
+                  ),
           ],
         ),
       ),

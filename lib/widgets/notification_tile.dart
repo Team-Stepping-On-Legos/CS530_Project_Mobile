@@ -31,10 +31,11 @@ class NotificationTile extends StatelessWidget {
           horizontalOffset: -300,
           verticalOffset: -250,
           curve: Curves.easeInCubic,
-          child: Card(                    
+          child: Card(     
+            color: Colors.black87.withAlpha(20),                           
             elevation: 4.0,
             margin: const EdgeInsets.all(10.0),
-            shape: RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(              
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -44,24 +45,35 @@ class NotificationTile extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10.0, right: 10.0),
                   child: Text(
                    dateLocal.toString(),
-                    style: const TextStyle(
-                      color: Colors.grey,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 ListTile(
-                  title: Text(ntData.title),
-                  subtitle: Text(ntData.message),
+                  title: Text(ntData.title,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.white,
+                letterSpacing: 1.0,
+              ),),
+                  subtitle: Text(ntData.message,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+              ),),
                   isThreeLine: true,
                   leading: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Lottie.asset(
-                      'assets/notification_bell.json',
-                      repeat: true,
-                      animate: true,
-                      height: 50,
-                      width: 50,
+                    backgroundColor: Colors.white.withOpacity(0.5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Lottie.asset(
+                        'assets/notification_bell.json',
+                        repeat: true,
+                        animate: true,
+                        height: 50,
+                        width: 50,
+                      ),
                     ),
                   ),
                   // trailing: const Icon(Icons.more_vert),

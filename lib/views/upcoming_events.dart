@@ -266,6 +266,11 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
           DateFormat('hh:mm a').format(appointmentDetails.startTime).toString();
       _endTimeText =
           DateFormat('hh:mm a').format(appointmentDetails.endTime).toString();
+      if (appointmentDetails.isAllDay) {
+        _timeDetails = 'All day';
+      } else {
+        _timeDetails = '$_startTimeText - $_endTimeText';
+      }
       showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) => CupertinoActionSheet(

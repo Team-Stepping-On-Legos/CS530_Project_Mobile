@@ -71,6 +71,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       List<CalendarItem> _calendarItemsList = [];
       await API.getCalendarItems('All').then((response) {
@@ -96,8 +97,6 @@ class _MyAppState extends State<MyApp> {
                         Navigator.pop(context);
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => EventDetail(element, false)));
-                      } else {
-                        Navigator.pop(context);
                       }
                     }
                   },
@@ -106,6 +105,7 @@ class _MyAppState extends State<MyApp> {
             );
           });
     });
+
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
       List<CalendarItem> _calendarItemsList = [];
       await API.getCalendarItems('All').then((response) {
@@ -113,17 +113,18 @@ class _MyAppState extends State<MyApp> {
         _calendarItemsList =
             list.map((model) => CalendarItem.fromJson(model)).toList();
       });
-       _calendarItemsList.forEach((element) {
-                      if (message.data['eventId'] == element.id) {
-                        Navigator.pop(context);
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EventDetail(element, false)));
-                      } else {
-                        Navigator.of(context).pop();
-                      }
-                    });
+      _calendarItemsList.forEach((element) {
+        if (message.data['eventId'] == element.id) {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => EventDetail(element, false)));
+        } else {
+          Navigator.of(context).pop();
+        }
+      });
       print('Message clicked!');
     });
+    
   }
 
   @override

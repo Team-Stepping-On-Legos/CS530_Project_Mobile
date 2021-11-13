@@ -63,17 +63,20 @@ class _EventDetailState extends State<EventDetail> {
                       tag: 'HeroOne',
                       child: Container(
                         height: 25,
-                        decoration: BoxDecoration(color: Colors.indigo.withAlpha(150)),
+                        decoration:
+                            BoxDecoration(color: Colors.indigo.withAlpha(150)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
                             Text(
                               'UPCOMING EVENT',
                               style: TextStyle(
-                                  fontSize: 12,
-                                  letterSpacing: 1.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                fontSize: 12,
+                                letterSpacing: 1.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
                           ],
                         ),
@@ -114,18 +117,20 @@ class _EventDetailState extends State<EventDetail> {
                           tag: 'HeroOne',
                           child: Container(
                             height: 25,
-                            decoration:
-                                 BoxDecoration(color: Colors.green.withAlpha(150)),
+                            decoration: BoxDecoration(
+                                color: Colors.green.withAlpha(150)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
                                 Text(
                                   'ON-GOING EVENT',
                                   style: TextStyle(
-                                      fontSize: 12,
-                                      letterSpacing: 1.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 12,
+                                    letterSpacing: 1.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none,
+                                  ),
                                 ),
                               ],
                             ),
@@ -141,17 +146,20 @@ class _EventDetailState extends State<EventDetail> {
                           tag: 'HeroOne',
                           child: Container(
                             height: 25,
-                            decoration: BoxDecoration(color: Colors.red.withAlpha(150)),
+                            decoration:
+                                BoxDecoration(color: Colors.red.withAlpha(150)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   'PAST EVENT',
                                   style: TextStyle(
-                                      fontSize: 12,
-                                      letterSpacing: 1.0,
-                                      color: Colors.white.withOpacity(1.0),
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 12,
+                                    letterSpacing: 1.0,
+                                    color: Colors.white.withOpacity(1.0),
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none,
+                                  ),
                                 ),
                               ],
                             ),

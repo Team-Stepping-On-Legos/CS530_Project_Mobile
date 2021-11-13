@@ -142,11 +142,13 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                                 ' ' +
                                 details.date.year.toString(),
                             textStyle: GoogleFonts.robotoCondensed(
-                                color: Colors.white70,
-                                fontSize: 24,
-                                letterSpacing: 1.5,
-                                wordSpacing: 2.0,
-                                fontWeight: FontWeight.w900),
+                              color: Colors.white70,
+                              fontSize: 24,
+                              letterSpacing: 1.5,
+                              wordSpacing: 2.0,
+                              fontWeight: FontWeight.w900,
+                              decoration: TextDecoration.none,
+                            ),
                             speed: const Duration(milliseconds: 200),
                           ),
                         ],
@@ -406,8 +408,9 @@ DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
         isAllDay: cli.isAllDay ?? false,
         subject: cli.summary ?? '',
         notes: cli.description ?? '',
-
-        color: cli.category !=null ? Colors.indigo.withAlpha(90) : Colors.teal.withAlpha(90),
+        color: cli.category != null
+            ? Colors.indigo.withAlpha(90)
+            : Colors.teal.withAlpha(90),
         startTimeZone: '',
         endTimeZone: ''));
   }

@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
+import 'package:cs530_mobile/controllers/custom_page_route.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
 import 'package:cs530_mobile/views/calendar.dart';
@@ -102,66 +103,69 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
               Colors.indigo.withOpacity(.01),
             ],
           )),
-          child: SfCalendar(
-            headerStyle: const CalendarHeaderStyle(
-                textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  letterSpacing: 1.5,
-                ),
-                backgroundColor: Colors.transparent),
-            backgroundColor: Colors.transparent,
-            dataSource: _getCalendarDataSource(_calendarItemsList),
-            onTap: calendarTapped,
-            view: CalendarView.schedule,
-            monthViewSettings: const MonthViewSettings(showAgenda: true),
-            scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
-                ScheduleViewMonthHeaderDetails details) {
-              final String monthName = _getMonthDate(details.date.month);
-              return Stack(
-                children: [
-                  Image(
-                    image: ExactAssetImage(
-                        'assets/monthImages/' + monthName + '.png'),
-                    fit: BoxFit.cover,
-                    width: details.bounds.width,
-                    height: details.bounds.height,
-                    color: Colors.white.withOpacity(0.9),
-                    colorBlendMode: BlendMode.dstATop,
+          child: Hero(
+            tag: 'HeroOne',
+            child: SfCalendar(
+              headerStyle: const CalendarHeaderStyle(
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    letterSpacing: 1.5,
                   ),
-                  Center(
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        WavyAnimatedText(
-                          monthName.toUpperCase() +
-                              ' ' +
-                              details.date.year.toString(),
-                          textStyle: GoogleFonts.robotoCondensed(
-                              color: Colors.white70,
-                              fontSize: 24,
-                              letterSpacing: 1.5,
-                              wordSpacing: 2.0,
-                              fontWeight: FontWeight.w900),
-                          speed: const Duration(milliseconds: 200),
-                        ),
-                      ],
-                      totalRepeatCount: 1,
-                      pause: const Duration(milliseconds: 1000),
-                      displayFullTextOnTap: true,
-                      stopPauseOnTap: true,
+                  backgroundColor: Colors.transparent),
+              backgroundColor: Colors.transparent,
+              dataSource: _getCalendarDataSource(_calendarItemsList),
+              onTap: calendarTapped,
+              view: CalendarView.schedule,
+              monthViewSettings: const MonthViewSettings(showAgenda: true),
+              scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
+                  ScheduleViewMonthHeaderDetails details) {
+                final String monthName = _getMonthDate(details.date.month);
+                return Stack(
+                  children: [
+                    Image(
+                      image: ExactAssetImage(
+                          'assets/monthImages/' + monthName + '.png'),
+                      fit: BoxFit.cover,
+                      width: details.bounds.width,
+                      height: details.bounds.height,
+                      color: Colors.black87.withAlpha(130),
+                      colorBlendMode: BlendMode.dstATop,
                     ),
-                  )
-                ],
-              );
-            },
-            showDatePickerButton: true,
-            allowViewNavigation: true,
-            allowedViews: const [
-              CalendarView.month,
-              CalendarView.week,
-              CalendarView.day,
-              CalendarView.schedule,
-            ],
+                    Center(
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          WavyAnimatedText(
+                            monthName.toUpperCase() +
+                                ' ' +
+                                details.date.year.toString(),
+                            textStyle: GoogleFonts.robotoCondensed(
+                                color: Colors.white70,
+                                fontSize: 24,
+                                letterSpacing: 1.5,
+                                wordSpacing: 2.0,
+                                fontWeight: FontWeight.w900),
+                            speed: const Duration(milliseconds: 200),
+                          ),
+                        ],
+                        totalRepeatCount: 1,
+                        pause: const Duration(milliseconds: 1000),
+                        displayFullTextOnTap: true,
+                        stopPauseOnTap: true,
+                      ),
+                    )
+                  ],
+                );
+              },
+              showDatePickerButton: true,
+              allowViewNavigation: true,
+              allowedViews: const [
+                CalendarView.month,
+                CalendarView.week,
+                CalendarView.day,
+                CalendarView.schedule,
+              ],
+            ),
           ),
         ),
       ),
@@ -340,8 +344,10 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
               child: const Text('Open'),
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
+                Navigator.push(
+                    context,
+                    // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
+                    CustomPageRoute(EventDetail(cli, isMuted)));
               },
             ),
             CupertinoActionSheetAction(
@@ -389,15 +395,17 @@ class DataSource extends CalendarDataSource {
 
 DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
   List<Appointment> appointments = <Appointment>[];
-  for (var cli in _calendarItemsList) { 
+  for (var cli in _calendarItemsList) {
     appointments.add(Appointment(
         id: cli.id,
-        startTime: _getLocalTime(cli.startTime?? DateTime.now()) ,
-        endTime: _getLocalTime(cli.endTime ?? DateTime.now().add(const Duration(minutes: 1))),
+        startTime: _getLocalTime(cli.startTime ?? DateTime.now()),
+        endTime: _getLocalTime(
+            cli.endTime ?? DateTime.now().add(const Duration(minutes: 1))),
         isAllDay: cli.isAllDay ?? false,
         subject: cli.summary ?? '',
         notes: cli.description ?? '',
-        color: Colors.blue,
+
+        color: cli.category !=null ? Colors.indigo.withAlpha(90) : Colors.teal.withAlpha(90),
         startTimeZone: '',
         endTimeZone: ''));
   }
@@ -405,11 +413,11 @@ DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
   return DataSource(appointments);
 }
 
-DateTime _getLocalTime(DateTime dt){
-    var dateUtc = dt;
-    var strToDateTime = DateTime.parse(dateUtc.toString());
-    final convertLocal = strToDateTime.toLocal();
-    // var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
-    // String dateLocal = newFormat.format(convertLocal);
-    return convertLocal;
+DateTime _getLocalTime(DateTime dt) {
+  var dateUtc = dt;
+  var strToDateTime = DateTime.parse(dateUtc.toString());
+  final convertLocal = strToDateTime.toLocal();
+  // var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
+  // String dateLocal = newFormat.format(convertLocal);
+  return convertLocal;
 }

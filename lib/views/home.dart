@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
+import 'package:cs530_mobile/controllers/custom_page_route.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
 import 'package:cs530_mobile/controllers/localdb.dart';
 import 'package:cs530_mobile/models/category_data.dart';
@@ -17,7 +18,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool downloadCategoriesCheck = true;
   late AnimationController _animationController;
-  
+
   @override
   initState() {
     super.initState();
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   _getSavedCategories() {
     readContent("categories").then((String? value) {
       setState(() {
-        if(value!=null){
+        if (value != null) {
           readCategoryList = jsonDecode(value);
         }
       });
@@ -73,16 +73,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   _showDialogCategories() {
     showDialog(
         context: context,
+        barrierDismissible: true,
+        barrierColor: Colors.deepPurple.withAlpha(20),
         builder: (BuildContext context) {
           List<String> selectedCategoryList = [];
-          if(readCategoryList.isNotEmpty){
-            for (var element in readCategoryList) {selectedCategoryList.add(element);}
+          if (readCategoryList.isNotEmpty) {
+            for (var element in readCategoryList) {
+              selectedCategoryList.add(element);
+            }
           }
           //Here we will build the content of the dialog
           return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-                color: Colors.grey.withAlpha(20),
+              color: Colors.grey.withAlpha(20),
               child: AlertDialog(
                 backgroundColor: Colors.grey.withAlpha(20),
                 title: Center(
@@ -96,31 +100,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 content: categoryList.isNotEmpty
-                    ? Column(                  
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Lottie.asset(
-                          'assets/groucy_lady.json',
-                          repeat: true,
-                          reverse: true,
-                          animate: true,
-                          height: 150,
-                          width: 150,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        MultiSelectChip(
-                          categoryList,
-                          readCategoryList,
-                          onSelectionChanged: (selectedList) {
-                            setState(() {
-                              selectedCategoryList = selectedList;
-                            });
-                          },
-                        ),                    
-                      ],
-                    )                
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Hero(
+                            tag: 'HeroOne',
+                            child: Lottie.asset(
+                              'assets/groucy_lady.json',
+                              repeat: true,
+                              reverse: true,
+                              animate: true,
+                              height: 150,
+                              width: 150,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          MultiSelectChip(
+                            categoryList,
+                            readCategoryList,
+                            onSelectionChanged: (selectedList) {
+                              setState(() {
+                                selectedCategoryList = selectedList;
+                              });
+                            },
+                          ),
+                        ],
+                      )
                     : Lottie.asset(
                         'assets/404.json',
                         repeat: true,
@@ -143,11 +150,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     onPressed: () async {
                       FBM fbm = FBM();
                       for (var item in categoryList) {
-                    fbm.unSubscribeTopic(item.name);
+                        fbm.unSubscribeTopic(item.name);
                       }
                       fbm.subscribeTopics(selectedCategoryList);
                       await writeContent("categories", selectedCategoryList);
-          
+
                       _animationController.forward();
                       await Future.delayed(const Duration(seconds: 2), () {});
                       _animationController.reverse();
@@ -160,8 +167,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           );
         });
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -232,10 +237,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           0.9,
         ],
         colors: [
-          Colors.white.withOpacity(.5),
-          Colors.indigo.shade300.withOpacity(.5),
-          Colors.deepPurple.shade300.withOpacity(.5),
-          Colors.indigo.withOpacity(.5),
+          Colors.deepPurple.shade300.withOpacity(.3),
+          Colors.indigo.shade300.withOpacity(.3),
+          Colors.deepPurple.shade300.withOpacity(.3),
+          Colors.indigo.shade300.withOpacity(.3),
         ],
       )),
       child: BottomAppBar(
@@ -258,10 +263,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onTap: () {
             HapticFeedback.heavyImpact();
             //Here we will build the content of the dialog
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => NotificationHistory(
-                      subscribedCategories: _getSavedCategoriesAsString(),
-                    )));
+            Navigator.push(
+                context,
+                // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
+                CustomPageRoute(NotificationHistory(
+                  subscribedCategories: _getSavedCategoriesAsString(),
+                )));
           },
           child: const HomeCardWidget(
             assetName: 'upcoming',
@@ -297,9 +304,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             //         );
             //       });
             // }
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UpcomingViewCalendar(
-                    subscribedCategories: _getSavedCategoriesAsString())));
+
+            Navigator.push(
+                context,
+                CustomPageRoute(UpcomingViewCalendar(
+                  subscribedCategories: _getSavedCategoriesAsString(),
+                )));
           },
           child: const HomeCardWidget(
             assetName: 'marking_calendar',
@@ -321,8 +331,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             HapticFeedback.heavyImpact();
             exit(0);
           },
-          child: const HomeCardWidget(
-              assetName: 'exit', name: 'EXIT\nAPP'),
+          child: const HomeCardWidget(assetName: 'exit', name: 'EXIT\nAPP'),
         ),
 
         // ALL EVENTS

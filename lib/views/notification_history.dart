@@ -86,16 +86,19 @@ class _NotificationHistoryState extends State<NotificationHistory> {
               ],
             )),
             child: AnimationLimiter(
-              child: ListView(
-                physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-                reverse: true,
-                shrinkWrap: true,
-                children: [                  
-                  ..._notificationHistoryList.reversed.map((event) {
-                    return Center(child: NotificationTile(event,_notificationHistoryList.indexOf(event)));
-                  }),
-                ],
+              child: Hero(
+                tag: 'HeroOne',
+                child: ListView(
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  reverse: true,
+                  shrinkWrap: true,
+                  children: [                  
+                    ..._notificationHistoryList.reversed.map((event) {
+                      return Center(child: NotificationTile(event,_notificationHistoryList.indexOf(event)));
+                    }),
+                  ],
+                ),
               ),
             ),
           ),

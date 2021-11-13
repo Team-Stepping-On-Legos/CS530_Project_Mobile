@@ -56,21 +56,24 @@ class _EventDetailState extends State<EventDetail> {
                   !_endDuration.inMicroseconds.isNegative
               ? Column(
                   children: [
-                    Container(
-                      height: 25,
-                      decoration: const BoxDecoration(color: Colors.blue),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            'UPCOMING EVENT',
-                            style: TextStyle(
-                                fontSize: 12,
-                                letterSpacing: 1.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                    Hero(
+                      tag: 'HeroOne',
+                      child: Container(
+                        height: 25,
+                        decoration: BoxDecoration(color: Colors.indigo.withAlpha(150)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              'UPCOMING EVENT',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  letterSpacing: 1.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -104,21 +107,25 @@ class _EventDetailState extends State<EventDetail> {
               : _onGoing
                   ? Column(
                       children: [
-                        Container(
-                          height: 25,
-                          decoration: const BoxDecoration(color: Colors.green),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'ON-GOING EVENT',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    letterSpacing: 1.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        Hero(
+                          tag: 'HeroOne',
+                          child: Container(
+                            height: 25,
+                            decoration:
+                                 BoxDecoration(color: Colors.green.withAlpha(150)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'ON-GOING EVENT',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      letterSpacing: 1.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -127,21 +134,24 @@ class _EventDetailState extends State<EventDetail> {
                     )
                   : Column(
                       children: [
-                        Container(
-                          height: 25,
-                          decoration: const BoxDecoration(color: Colors.red),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'PAST EVENT',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    letterSpacing: 1.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        Hero(
+                          tag: 'HeroOne',
+                          child: Container(
+                            height: 25,
+                            decoration: BoxDecoration(color: Colors.red.withAlpha(150)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'PAST EVENT',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      letterSpacing: 1.0,
+                                      color: Colors.white.withOpacity(1.0),
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),

@@ -38,10 +38,13 @@ class _EventDetailState extends State<EventDetail> {
     return Scaffold(
         appBar: CupertinoNavigationBar(
           backgroundColor: Colors.deepPurple,
-          leading: IconButton(
-            color: Colors.white,
-            icon: const Icon(Icons.navigate_before_outlined),
-            onPressed: () => Navigator.of(context).pop(),
+          leading: Material(
+            color: Colors.deepPurple,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.navigate_before_outlined),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
           middle: const Text(
             'EVENT DETAIL',

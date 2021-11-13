@@ -28,8 +28,7 @@ class UpcomingViewCalendar extends StatefulWidget {
   _UpcomingViewCalendarState createState() => _UpcomingViewCalendarState();
 }
 
-class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
-    with TickerProviderStateMixin {
+class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
   bool _downloadCalendarItemsDataCheck = true;
   List<CalendarItem> _calendarItemsList = [];
   List<dynamic> _mutedEventsList = [];
@@ -73,10 +72,13 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       child: Scaffold(
         appBar: CupertinoNavigationBar(
           backgroundColor: Colors.deepPurple,
-          leading: IconButton(
-            color: Colors.white,
-            icon: const Icon(Icons.navigate_before_outlined),
-            onPressed: () => Navigator.of(context).pop(),
+          leading: Material(
+            color: Colors.deepPurple,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.navigate_before_outlined),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
           middle: const Text(
             'EVENTS CALENDAR',

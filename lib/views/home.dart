@@ -310,6 +310,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 CustomPageRoute(UpcomingViewCalendar(
                   subscribedCategories: _getSavedCategoriesAsString(),
                 )));
+
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => UpcomingViewCalendar(
+            //       subscribedCategories: _getSavedCategoriesAsString(),
+            //     )));
           },
           child: const HomeCardWidget(
             assetName: 'marking_calendar',

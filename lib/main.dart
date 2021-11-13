@@ -141,7 +141,7 @@ class _MyAppState extends State<MyApp> {
 
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const UpcomingViewCalendar(
-                subscribedCategories: 'All',
+                subscribedCategories: 'All',                
               )));
       // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> const UpcomingViewCalendar(subscribedCategories: 'All',)), (route) => false);
     });

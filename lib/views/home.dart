@@ -17,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -27,6 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool downloadCategoriesCheck = true;
   late AnimationController _animationController;
+  
   @override
   initState() {
     super.initState();
@@ -158,6 +160,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           );
         });
   }
+
+  
 
   @override
   Widget build(BuildContext context) {

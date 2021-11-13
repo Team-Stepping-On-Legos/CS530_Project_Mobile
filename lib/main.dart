@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cs530_mobile/views/event_detail.dart';
 import 'package:cs530_mobile/views/splash.dart';
+import 'package:cs530_mobile/views/upcoming_events.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +131,23 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
+    AwesomeNotifications().actionStream.listen((event) {
+
+      if(event.channelKey == 'basic_channel' ){
+        AwesomeNotifications().getGlobalBadgeCounter().then((value) => 
+        AwesomeNotifications().setGlobalBadgeCounter(value-1)
+        );
+      }
+
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const UpcomingViewCalendar(
+                subscribedCategories: 'All',
+              )));
+      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> const UpcomingViewCalendar(subscribedCategories: 'All',)), (route) => false);
+    });
+
+    
+
     //FCM ON FOREGROUND MESSAGE RECIEVED
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print("message recieved");
@@ -200,6 +218,12 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
     });
+  }
+
+  @override
+  void dispose() {
+    AwesomeNotifications().actionSink.close();
+    super.dispose();
   }
 
   @override

@@ -18,6 +18,11 @@ Future<File> get _mutedeventsFile async {
   return File('$path/mutedevents.txt');
 }
 
+Future<File> get _notifyEventFile async {
+  final path = await _localPath;
+  return File('$path/notifyevent.txt');
+}
+
 Future<String?> readContent(String fileName) async {
   final File file;
   try {
@@ -28,19 +33,21 @@ Future<String?> readContent(String fileName) async {
       case "mutedevents":
         file = await _mutedeventsFile;
         break;
+      case "notifyevent":
+        file = await _notifyEventFile;
+        break;
       default:
         file = await _categoriesFile;
         break;
     }
-    if(file.existsSync()){
+    if (file.existsSync()) {
       String contents = await file.readAsString();
       print("READING FROM FILE: $contents");
       // Returning the contents of the file
       return contents;
-    }else{
+    } else {
       return null;
     }
-   
   } catch (e) {
     // If encountering an error, return
     return 'Error!';
@@ -56,13 +63,25 @@ Future<File> writeContent(String fileName, List<dynamic> object) async {
     case "mutedevents":
       file = await _mutedeventsFile;
       break;
+    case "notifyevent":
+      file = await _notifyEventFile;
+      break;
     default:
       file = await _categoriesFile;
       break;
   }
 
   String jsonObject = jsonEncode(object);
-    print("WRITING TO FILE: $jsonObject");
+  print("WRITING TO FILE: $jsonObject");
+  // Write the file
+  return file.writeAsString(jsonObject);
+}
+
+Future<File> writeDynamicContent(String fileName, dynamic object) async {
+  final File file;
+  file = await _notifyEventFile;
+  String jsonObject = jsonEncode(object);
+  print("WRITING TO FILE: $jsonObject");
   // Write the file
   return file.writeAsString(jsonObject);
 }

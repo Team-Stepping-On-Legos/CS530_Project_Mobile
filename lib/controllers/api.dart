@@ -18,7 +18,7 @@ class API {
 
   
   static Future getCalendarItems(String categories) {
-    var url = baseUrl + "/api/events";
+    var url = baseUrl + "/api/calendar/list?category=$categories";
     return http.get(Uri.parse(url));
   }
 }

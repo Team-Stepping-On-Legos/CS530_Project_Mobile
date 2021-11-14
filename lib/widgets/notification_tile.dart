@@ -17,7 +17,7 @@ class NotificationTile extends StatelessWidget {
   var dateUtc = ntData.time;
   var strToDateTime = DateTime.parse(dateUtc.toString());
   final convertLocal = strToDateTime.toLocal();
-  var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
+  var newFormat = DateFormat("hh:mm aaa");
   String dateLocal = newFormat.format(convertLocal);
 
     return AnimationConfiguration.staggeredList(

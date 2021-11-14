@@ -18,10 +18,6 @@ Future<File> get _mutedeventsFile async {
   return File('$path/mutedevents.txt');
 }
 
-Future<File> get _notifyEventFile async {
-  final path = await _localPath;
-  return File('$path/notifyevent.txt');
-}
 
 Future<String?> readContent(String fileName) async {
   final File file;
@@ -32,9 +28,6 @@ Future<String?> readContent(String fileName) async {
         break;
       case "mutedevents":
         file = await _mutedeventsFile;
-        break;
-      case "notifyevent":
-        file = await _notifyEventFile;
         break;
       default:
         file = await _categoriesFile;
@@ -63,9 +56,6 @@ Future<File> writeContent(String fileName, List<dynamic> object) async {
     case "mutedevents":
       file = await _mutedeventsFile;
       break;
-    case "notifyevent":
-      file = await _notifyEventFile;
-      break;
     default:
       file = await _categoriesFile;
       break;
@@ -77,11 +67,10 @@ Future<File> writeContent(String fileName, List<dynamic> object) async {
   return file.writeAsString(jsonObject);
 }
 
-Future<File> writeDynamicContent(String fileName, dynamic object) async {
-  final File file;
-  file = await _notifyEventFile;
-  String jsonObject = jsonEncode(object);
-  print("WRITING TO FILE: $jsonObject");
-  // Write the file
-  return file.writeAsString(jsonObject);
-}
+
+  String getListAsCommaSepratedString(List<dynamic> ls, String additonalString) {
+    return (ls.join(',') == null)
+        ? additonalString
+        : ls.join(',').toString() + ",$additonalString";
+  }
+  

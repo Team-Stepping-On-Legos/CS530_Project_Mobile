@@ -5,7 +5,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/custom_page_route.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
-import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/controllers/utils.dart';
 import 'package:cs530_mobile/models/category_data.dart';
 import 'package:cs530_mobile/views/notification_history.dart';
 import 'package:cs530_mobile/views/upcoming_events.dart';
@@ -267,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 context,
                 // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
                 CustomPageRoute(NotificationHistory(
-                  subscribedCategories: _getSavedCategoriesAsString(),
+                  subscribedCategories: getListAsCommaSepratedString(readCategoryList,"Uncat"),
                 )));
           },
           child: const HomeCardWidget(
@@ -308,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Navigator.push(
                 context,
                 CustomPageRoute(UpcomingViewCalendar(
-                  subscribedCategories: _getSavedCategoriesAsString(),
+                  subscribedCategories:  getListAsCommaSepratedString(readCategoryList,"All"),
                 )));
 
             // Navigator.push(
@@ -355,11 +355,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  String _getSavedCategoriesAsString() {
-    return (readCategoryList.join(',') == null)
-        ? "Uncat"
-        : readCategoryList.join(',').toString() + ",Uncat";
-  }
 }
 
 class MultiSelectChip extends StatefulWidget {

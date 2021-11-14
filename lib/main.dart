@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'controllers/api.dart';
-import 'controllers/localdb.dart';
+import 'controllers/utils.dart';
 import 'models/calendar_item.dart';
 
 void main() async {
@@ -78,8 +78,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         content: NotificationContent(
             id: DateTime.now().microsecond,
             channelKey: 'basic_channel',
-            title: message.data['title']!,
-            body: message.data['body']!));
+            title: message.data['title'] ?? 'No title',
+            body: message.data['body'] ?? 'No body',
+            payload: {'eventId': message.data['eventId'] ?? 'null'}));
   }
 }
 
@@ -131,41 +132,50 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    AwesomeNotifications().actionStream.listen((event) {
+    AwesomeNotifications().actionStream.listen((event) async {
+      List<CalendarItem> _calendarItemsList = [];
 
-      if(event.channelKey == 'basic_channel' ){
-        AwesomeNotifications().getGlobalBadgeCounter().then((value) => 
-        AwesomeNotifications().setGlobalBadgeCounter(value-1)
-        );
+      if (event.channelKey == 'basic_channel') {
+        AwesomeNotifications().getGlobalBadgeCounter().then(
+            (value) => AwesomeNotifications().setGlobalBadgeCounter(value - 1));
       }
 
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const UpcomingViewCalendar(
-                subscribedCategories: 'All',                
-              )));
-      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> const UpcomingViewCalendar(subscribedCategories: 'All',)), (route) => false);
-    });
-
-    
-
-    //FCM ON FOREGROUND MESSAGE RECIEVED
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("message recieved");
-      List<CalendarItem> _calendarItemsList = [];
-      CalendarItem? cl;
       await API.getCalendarItems('All').then((response) {
         Iterable list = json.decode(response.body);
         _calendarItemsList =
             list.map((model) => CalendarItem.fromJson(model)).toList();
+        bool eventLocated = false;
+        for (var element in _calendarItemsList) {
+          if (element.id == event.payload!['eventId']) {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => EventDetail(element, false)));
+            eventLocated = true;
+          }
+        }
+        if (!eventLocated) {
+          readContent("categories").then((String? value) {
+            List<dynamic> readCategoryList = jsonDecode(value ?? '');
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UpcomingViewCalendar(
+                      subscribedCategories:
+                          getListAsCommaSepratedString(readCategoryList, "All"),
+                    )));
+          });
+        }
       });
+      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> const UpcomingViewCalendar(subscribedCategories: 'All',)), (route) => false);
+    });
 
+    //FCM ON FOREGROUND MESSAGE RECIEVED
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("message recieved");
       List<dynamic> _mutedEventsList = [];
       await readContent("mutedevents").then((String? value) {
         if (value != null) {
           _mutedEventsList = jsonDecode(value);
         }
       });
-
+      // FIND MUTE MESSAGE ID
       bool muteNotification = false;
       if (_mutedEventsList.isNotEmpty) {
         _mutedEventsList.forEach((mci) => {
@@ -176,13 +186,16 @@ class _MyAppState extends State<MyApp> {
                 }
             });
       }
+      // SHOW NOTIFICATION IF NOT MUTED
       if (!muteNotification) {
         AwesomeNotifications().createNotification(
-            content: NotificationContent(
-                id: DateTime.now().microsecond,
-                channelKey: 'basic_channel',
-                title: message.data['title']!,
-                body: message.data['body']!));
+          content: NotificationContent(
+              id: DateTime.now().microsecond,
+              channelKey: 'basic_channel',
+              title: message.data['title'] ?? 'No Title',
+              body: message.data['body'] ?? 'No Body',
+              payload: {'eventId': message.data['eventId'] ?? 'null'}),
+        );
       }
       // showDialog(
       //     context: context,

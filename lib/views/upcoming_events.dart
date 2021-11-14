@@ -4,7 +4,7 @@ import 'dart:ffi';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/custom_page_route.dart';
-import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/controllers/utils.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
 import 'package:cs530_mobile/views/calendar.dart';
 import 'package:cs530_mobile/views/event_detail.dart';

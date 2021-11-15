@@ -158,7 +158,7 @@ class _MyAppState extends State<MyApp> {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UpcomingViewCalendar(
                       subscribedCategories:
-                          getListAsCommaSepratedString(readCategoryList, "All"),
+                          getListAsCommaSepratedString(readCategoryList, "Uncat"),
                     )));
           });
         }
@@ -186,6 +186,7 @@ class _MyAppState extends State<MyApp> {
                 }
             });
       }
+          
       // SHOW NOTIFICATION IF NOT MUTED
       if (!muteNotification) {
         AwesomeNotifications().createNotification(

@@ -122,8 +122,8 @@ class _NotificationHistoryState extends State<NotificationHistory> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            '${DateFormat("MMM dd, yyyy  EEEE").format(DateTime.parse(element.time.toString()).toLocal())}',
-                            textAlign: TextAlign.center, style: TextStyle(color: Colors.white),
+                            DateFormat("MMM dd, yyyy  EEEE").format(DateTime.parse(element.time.toString()).toLocal()),
+                            textAlign: TextAlign.center, style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

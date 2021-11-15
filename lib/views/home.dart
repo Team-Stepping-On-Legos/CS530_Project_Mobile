@@ -308,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Navigator.push(
                 context,
                 CustomPageRoute(UpcomingViewCalendar(
-                  subscribedCategories:  getListAsCommaSepratedString(readCategoryList,"All"),
+                  subscribedCategories:  getListAsCommaSepratedString(readCategoryList,"Uncat"),
                 )));
 
             // Navigator.push(

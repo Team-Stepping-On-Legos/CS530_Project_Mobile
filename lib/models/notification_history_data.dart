@@ -1,19 +1,19 @@
 class NotificationHistoryData{
-  String? eventID;
+  String? eventId;
   String time;
   String title;
   String message;
 
-  NotificationHistoryData(this.eventID, this.time, this.title, this.message,);
+  NotificationHistoryData(this.eventId, this.time, this.title, this.message,);
 
   NotificationHistoryData.fromJson(Map json)
-      : eventID = json['eventID'],
+      : eventId = json['eventId'],
         time = json['time'],
         title = json['title'],
         message = json['message'];
 
   Map toJson() {
-    return {'eventID': eventID, 'time': time, 'title': title, 'message': message};
+    return {'eventId': eventId, 'time': time, 'title': title, 'message': message};
   }
 
   Object? toList() {}

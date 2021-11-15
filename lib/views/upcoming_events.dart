@@ -317,18 +317,21 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
             children: [
               Text(
                 "$_apptDescription",
+                textAlign: TextAlign.left,
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.grey,
                   letterSpacing: 1.0,
                 ),
               ),
+              const SizedBox(height:5.0),
               Text(
                 "$_dateText",
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.grey,
-                  letterSpacing: 1.0,
+                  letterSpacing: 1.0,                  
+                  fontWeight: FontWeight.w800
                 ),
               ),
               Text(

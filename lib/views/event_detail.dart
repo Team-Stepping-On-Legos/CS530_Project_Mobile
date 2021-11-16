@@ -82,11 +82,11 @@ class _EventDetailState extends State<EventDetail> {
     }
 
     (DateTime.now().isAfter(widget.calendarItem.startTime!) &&
-                DateTime.now().isBefore(widget.calendarItem.endTime!)) 
-                ||
+                DateTime.now().isBefore(widget.calendarItem.endTime!)) ||
             ((_diffInDays(DateTime.now(), widget.calendarItem.startTime!) ==
-                    0) && widget.calendarItem.isAllDay! && DateTime.now().isAfter(widget.calendarItem.startTime!) )
-
+                    0) &&
+                widget.calendarItem.isAllDay! &&
+                DateTime.now().isAfter(widget.calendarItem.startTime!))
         ? setState(() => {_onGoing = true})
         : setState(() => {_onGoing = false});
 
@@ -282,33 +282,52 @@ class _EventDetailState extends State<EventDetail> {
             const SizedBox(
               height: 10,
             ),
-            Text(
-              'START:  ' +
-                  DateFormat('MMM dd, yyyy hh:mm a')
-                      .format(widget.calendarItem.startTime!)
-                      .toString(),
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.grey,
-                letterSpacing: 1.0,
-              ),
-            ),
-            Text(
-              'END:      ' +
-                  DateFormat('MMM dd, yyyy hh:mm a')
-                      .format(widget.calendarItem.endTime!)
-                      .toString(),
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.grey,
-                letterSpacing: 1.0,
-              ),
-            ),
+            widget.calendarItem.isAllDay!
+                ? Text(
+                    'All Day\n\t\t\t\t\t\t' +
+                            DateFormat('MMM dd, yyyy')
+                                .format(widget.calendarItem.startTime!)
+                                .toString() +
+                            DateFormat(' - MMM dd, yyyy')
+                                .format(widget.calendarItem.endTime!)
+                                .toString(),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
+                      letterSpacing: 1.0,
+                    ),
+                  )
+                : Column(
+                    children: [
+                      Text(
+                        'Starts\n\t\t\t\t\t\t' +
+                            DateFormat('MMM dd, yyyy hh:mm a')
+                                .format(widget.calendarItem.startTime!)
+                                .toString(),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      Text(
+                        'Ends\n\t\t\t\t\t\t' +
+                            DateFormat('MMM dd, yyyy hh:mm a')
+                                .format(widget.calendarItem.endTime!)
+                                .toString(),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ],
+                  ),
             const SizedBox(
               height: 25,
             ),
             Text(
-              'DESCRIPTION: ${widget.calendarItem.description ?? ''}',
+              'DESCRIPTION\n\t\t\t\t\t\t ${widget.calendarItem.description ?? ''}',
               style: const TextStyle(
                 fontSize: 15,
                 color: Colors.grey,

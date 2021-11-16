@@ -43,52 +43,15 @@ class _EventDetailState extends State<EventDetail> {
         _notificationHistoryList = list
             .map((model) => NotificationHistoryData.fromJson(model))
             .toList();
-
-        // _eventSpecificNotificationHistoryList = _notificationHistoryList
-        //     .where((element) => _notificationHistoryList
-        //         .contains(element.eventId == widget.calendarItem.id))
-        //     .toList();
-
-        _notificationHistoryList.forEach((element) {
-          if(element.eventId==widget.calendarItem.id){
+        _eventSpecificNotificationHistoryList = [];
+        for (var element in _notificationHistoryList) {
+          if (element.eventId == widget.calendarItem.id) {
             _eventSpecificNotificationHistoryList.add(element);
           }
-        });
+        }
       });
     });
   }
-
-//   Future<void> _getNotificationHistory() async {
-//     await readContent("categories").then((String? value) {
-//       List<dynamic> readCategoryList = jsonDecode(value ?? '');
-//       subscribedCats = getListAsCommaSepratedString(readCategoryList, "Uncat");
-//     });
-//  print('${subscribedCats} and ${widget.calendarItem.id}');
-
-//     return API.getNotificationHistory(subscribedCats).then((response) {
-//       setState(() {
-//         Iterable list = json.decode(response.body);
-//         _notificationHistoryList = list
-//             .map((model) => NotificationHistoryData.fromJson(model))
-//             .toList();
-
-  // _notificationHistoryList.forEach((element) {
-  //     print('${element.eventID} and ${widget.calendarItem.id}');
-  //   if(element.eventID == widget.calendarItem.id){
-  //     print(element);
-  //     _eventSpecificNotificationHistoryList.add(element);
-  //   }
-  // });
-
-//         _eventSpecificNotificationHistoryList = _notificationHistoryList
-//             .where((element) =>
-//                 _notificationHistoryList.contains(element.eventID == widget.calendarItem.id))
-//             .toList();
-
-//         print(_eventSpecificNotificationHistoryList);
-//       });
-//     });
-//   }
 
   late bool _onGoing;
   @override
@@ -109,7 +72,21 @@ class _EventDetailState extends State<EventDetail> {
     Duration _endDuration =
         widget.calendarItem.endTime!.difference(DateTime.now());
 
-    !_endDuration.inMicroseconds.isNegative
+    int _diffInDays(DateTime date1, DateTime date2) {
+      return ((date1.difference(date2) -
+                      Duration(hours: date1.hour) +
+                      Duration(hours: date2.hour))
+                  .inHours /
+              24)
+          .round();
+    }
+
+    (DateTime.now().isAfter(widget.calendarItem.startTime!) &&
+                DateTime.now().isBefore(widget.calendarItem.endTime!)) 
+                ||
+            ((_diffInDays(DateTime.now(), widget.calendarItem.startTime!) ==
+                    0) && widget.calendarItem.isAllDay! && DateTime.now().isAfter(widget.calendarItem.startTime!) )
+
         ? setState(() => {_onGoing = true})
         : setState(() => {_onGoing = false});
 
@@ -342,14 +319,13 @@ class _EventDetailState extends State<EventDetail> {
               height: 25,
             ),
             const Center(
-              child:  Text(
+              child: Text(
                 'NOTIFICATION HISTORY',
                 style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w800
-                ),
+                    fontSize: 15,
+                    color: Colors.grey,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w800),
               ),
             ),
             _eventSpecificNotificationHistoryList.isEmpty
@@ -357,62 +333,62 @@ class _EventDetailState extends State<EventDetail> {
                     height: 0,
                   )
                 : Expanded(
-                  child: StickyGroupedListView(
-                    physics: const BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics()),
-                    reverse: false,
-                    floatingHeader: false,
-                    order: StickyGroupedListOrder.DESC,
-                    elements: _eventSpecificNotificationHistoryList,
-                    itemBuilder: (_, NotificationHistoryData element) {
-                      return Center(
-                          child: NotificationTile(
-                              element,
-                              _eventSpecificNotificationHistoryList
-                                  .indexOf(element)));
-                    },
-                    groupBy: (NotificationHistoryData element) => DateTime(
-                        DateTime.parse(element.time.toString())
-                            .toLocal()
-                            .year,
-                        DateTime.parse(element.time.toString())
-                            .toLocal()
-                            .month,
-                        DateTime.parse(element.time.toString())
-                            .toLocal()
-                            .day),
-                    groupSeparatorBuilder:
-                        (NotificationHistoryData element) => Container(
-                      decoration: BoxDecoration(
-                          color: Colors.transparent.withAlpha(20)),
-                      height: 50,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: 220,
-                          decoration: BoxDecoration(
-                            color: Colors.indigo.withAlpha(60),
-                            border: Border.all(
-                              color: Colors.black87.withAlpha(20),
+                    child: StickyGroupedListView(
+                      physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()),
+                      reverse: false,
+                      floatingHeader: false,
+                      order: StickyGroupedListOrder.DESC,
+                      elements: _eventSpecificNotificationHistoryList,
+                      itemBuilder: (_, NotificationHistoryData element) {
+                        return Center(
+                            child: NotificationTile(
+                                element,
+                                _eventSpecificNotificationHistoryList
+                                    .indexOf(element)));
+                      },
+                      groupBy: (NotificationHistoryData element) => DateTime(
+                          DateTime.parse(element.time.toString())
+                              .toLocal()
+                              .year,
+                          DateTime.parse(element.time.toString())
+                              .toLocal()
+                              .month,
+                          DateTime.parse(element.time.toString())
+                              .toLocal()
+                              .day),
+                      groupSeparatorBuilder:
+                          (NotificationHistoryData element) => Container(
+                        decoration: BoxDecoration(
+                            color: Colors.transparent.withAlpha(20)),
+                        height: 50,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            width: 220,
+                            decoration: BoxDecoration(
+                              color: Colors.indigo.withAlpha(60),
+                              border: Border.all(
+                                color: Colors.black87.withAlpha(20),
+                              ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5.0)),
                             ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(5.0)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              DateFormat("MMM dd, yyyy  EEEE").format(
-                                  DateTime.parse(element.time.toString())
-                                      .toLocal()),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                DateFormat("MMM dd, yyyy  EEEE").format(
+                                    DateTime.parse(element.time.toString())
+                                        .toLocal()),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
           ],
         ),
       ),

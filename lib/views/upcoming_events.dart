@@ -266,6 +266,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
       cli.startTime = appointmentDetails.startTime;
       cli.endTime = appointmentDetails.endTime;
       cli.title = appointmentDetails.subject;
+      cli.isAllDay = appointmentDetails.isAllDay;
 
       _dateText = DateFormat('MMMM dd, yyyy')
           .format(appointmentDetails.startTime)

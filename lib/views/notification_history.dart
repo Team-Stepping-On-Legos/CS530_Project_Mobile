@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
@@ -52,6 +53,16 @@ class _NotificationHistoryState extends State<NotificationHistory> {
     double _w = MediaQuery.of(context).size.width;
     return ModalProgressHUD(
       inAsyncCall: _downloadNotificationDataCheck,
+      progressIndicator: Center(
+        child: Lottie.asset(
+          'assets/loading.json',
+          repeat: true,
+          reverse: false,
+          animate: true,
+          height: 150,
+          width: MediaQuery.of(context).size.width - 10,
+        ),
+      ),
       child: RefreshIndicator(
         onRefresh: () => _getNotificationHistory(),
         child: Scaffold(
@@ -101,12 +112,15 @@ class _NotificationHistoryState extends State<NotificationHistory> {
                         child: NotificationTile(element,
                             _notificationHistoryList.indexOf(element)));
                   },
-                  groupBy: (NotificationHistoryData element) => 
-                     DateTime(DateTime.parse(element.time.toString()).toLocal().year,DateTime.parse(element.time.toString()).toLocal().month,DateTime.parse(element.time.toString()).toLocal().day),
+                  groupBy: (NotificationHistoryData element) => DateTime(
+                      DateTime.parse(element.time.toString()).toLocal().year,
+                      DateTime.parse(element.time.toString()).toLocal().month,
+                      DateTime.parse(element.time.toString()).toLocal().day),
                   groupSeparatorBuilder: (NotificationHistoryData element) =>
                       Container(
-                        decoration: BoxDecoration(color: Colors.transparent.withAlpha(20)),
-                    height: 50,                  
+                    decoration:
+                        BoxDecoration(color: Colors.transparent.withAlpha(20)),
+                    height: 50,
                     child: Align(
                       alignment: Alignment.center,
                       child: Container(
@@ -122,8 +136,11 @@ class _NotificationHistoryState extends State<NotificationHistory> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            DateFormat("MMM dd, yyyy  EEEE").format(DateTime.parse(element.time.toString()).toLocal()),
-                            textAlign: TextAlign.center, style: const TextStyle(color: Colors.white),
+                            DateFormat("MMM dd, yyyy  EEEE").format(
+                                DateTime.parse(element.time.toString())
+                                    .toLocal()),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

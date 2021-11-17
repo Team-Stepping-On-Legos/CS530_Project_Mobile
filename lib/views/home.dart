@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/custom_page_route.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
@@ -26,12 +28,57 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  // Online Connectivity Initialization
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+
+  // Initialize a variable with [none] status to avoid nulls at startup
+  ConnectivityResult _connectivityResult = ConnectivityResult.none;
+
+  // Future for connectivity
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectivityResult = result;
+      if (!(_connectivityResult == ConnectivityResult.mobile ||
+          _connectivityResult == ConnectivityResult.wifi)) {
+        showConnectivityDialog();
+      }
+      if (_connectivityResult == ConnectivityResult.mobile ||
+          _connectivityResult == ConnectivityResult.wifi) {
+        if (_isOpen) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+      }
+    });
+  }
+
+  bool _isOpen = false;
+  bool isDoneFindingConnection = true;
+
   bool downloadCategoriesCheck = true;
   late AnimationController _animationController;
 
+  Future<void> isConnected() async {
+    // Online Connectivity Initialization
+    _connectivityResult = await (Connectivity().checkConnectivity());
+    if(!(_connectivityResult == ConnectivityResult.mobile ||
+          _connectivityResult == ConnectivityResult.wifi)){
+        showConnectivityDialog();
+      }
+  }
+
   @override
   initState() {
+    _isOpen = false;
+    // CONNCETIVITY
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+
     super.initState();
+
+    isConnected().then((_) => setState(() {
+          isDoneFindingConnection = false;
+        }));
 
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000));
@@ -45,6 +92,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   dispose() {
+    if (_connectivitySubscription != null) {
+      _connectivitySubscription!.cancel();
+    }
+
     super.dispose();
   }
 
@@ -172,7 +223,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ModalProgressHUD(
-        inAsyncCall: downloadCategoriesCheck,
+        progressIndicator: Center(
+          child: Lottie.asset(
+            'assets/loading.json',
+            repeat: true,
+            reverse: false,
+            animate: true,
+            height: 150,
+            width: MediaQuery.of(context).size.width - 10,
+          ),
+        ),
+        inAsyncCall: isDoneFindingConnection && downloadCategoriesCheck,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -267,7 +328,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 context,
                 // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
                 CustomPageRoute(NotificationHistory(
-                  subscribedCategories: getListAsCommaSepratedString(readCategoryList,"Uncat"),
+                  subscribedCategories:
+                      getListAsCommaSepratedString(readCategoryList, "Uncat"),
                 )));
           },
           child: const HomeCardWidget(
@@ -308,7 +370,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Navigator.push(
                 context,
                 CustomPageRoute(UpcomingViewCalendar(
-                  subscribedCategories:  getListAsCommaSepratedString(readCategoryList,"Uncat"),
+                  subscribedCategories:
+                      getListAsCommaSepratedString(readCategoryList, "Uncat"),
                 )));
 
             // Navigator.push(
@@ -355,6 +418,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  showConnectivityDialog() {
+    setState(() {
+      _isOpen = true;
+    });
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.deepPurple.withAlpha(20),
+        builder: (BuildContext context) {
+          //Here we will build the content of the dialog
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: WillPopScope(
+              onWillPop: () async => false,
+              child: Dialog(
+                backgroundColor: Colors.grey.withAlpha(20),
+                child: Lottie.asset(
+                  'assets/no_internet.json',
+                  repeat: true,
+                  reverse: false,
+                  animate: true,
+                  height: MediaQuery.of(context).size.height - 80,
+                  width: MediaQuery.of(context).size.width - 10,
+                ),
+              ),
+            ),
+          );
+        }).then((_) => setState(() => _isOpen = false));
+  }
 }
 
 class MultiSelectChip extends StatefulWidget {

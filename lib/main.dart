@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cs530_mobile/views/event_detail.dart';
 import 'package:cs530_mobile/views/splash.dart';
 import 'package:cs530_mobile/views/upcoming_events.dart';
@@ -7,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:lottie/lottie.dart';
 
 import 'controllers/api.dart';
 import 'controllers/utils.dart';
@@ -92,10 +96,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   void initState() {
     super.initState();
+    
 
+    // AWESOME NOTIFICATIONS
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         // Insert here your friendly dialog box before call the request method
@@ -157,8 +164,8 @@ class _MyAppState extends State<MyApp> {
             List<dynamic> readCategoryList = jsonDecode(value ?? '');
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UpcomingViewCalendar(
-                      subscribedCategories:
-                          getListAsCommaSepratedString(readCategoryList, "Uncat"),
+                      subscribedCategories: getListAsCommaSepratedString(
+                          readCategoryList, "Uncat"),
                     )));
           });
         }
@@ -186,7 +193,7 @@ class _MyAppState extends State<MyApp> {
                 }
             });
       }
-          
+
       // SHOW NOTIFICATION IF NOT MUTED
       if (!muteNotification) {
         AwesomeNotifications().createNotification(
@@ -252,4 +259,5 @@ class _MyAppState extends State<MyApp> {
       home: const SplashScreen(),
     );
   }
+
 }

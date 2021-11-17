@@ -69,6 +69,16 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: _downloadCalendarItemsDataCheck,
+      progressIndicator: Center(
+        child: Lottie.asset(
+          'assets/loading.json',
+          repeat: true,
+          reverse: false,
+          animate: true,
+          height: 150,
+          width: MediaQuery.of(context).size.width - 10,
+        ),
+      ),
       child: Scaffold(
         appBar: CupertinoNavigationBar(
           backgroundColor: Colors.deepPurple,
@@ -325,15 +335,14 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                   letterSpacing: 1.0,
                 ),
               ),
-              const SizedBox(height:5.0),
+              const SizedBox(height: 5.0),
               Text(
                 "$_dateText",
                 style: const TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey,
-                  letterSpacing: 1.0,                  
-                  fontWeight: FontWeight.w800
-                ),
+                    fontSize: 15,
+                    color: Colors.grey,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w800),
               ),
               Text(
                 _timeDetails!,

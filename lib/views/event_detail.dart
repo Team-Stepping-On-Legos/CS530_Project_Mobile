@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
@@ -92,6 +93,16 @@ class _EventDetailState extends State<EventDetail> {
 
     return ModalProgressHUD(
       inAsyncCall: _downloadNotificationDataCheck,
+      progressIndicator: Center(
+        child: Lottie.asset(
+          'assets/loading.json',
+          repeat: true,
+          reverse: false,
+          animate: true,
+          height: 150,
+          width: MediaQuery.of(context).size.width - 10,
+        ),
+      ),
       child: Scaffold(
           appBar: CupertinoNavigationBar(
             backgroundColor: Colors.deepPurple,
@@ -285,12 +296,12 @@ class _EventDetailState extends State<EventDetail> {
             widget.calendarItem.isAllDay!
                 ? Text(
                     'All Day\n\t\t\t\t\t\t' +
-                            DateFormat('MMM dd, yyyy')
-                                .format(widget.calendarItem.startTime!)
-                                .toString() +
-                            DateFormat(' - MMM dd, yyyy')
-                                .format(widget.calendarItem.endTime!)
-                                .toString(),
+                        DateFormat('MMM dd, yyyy')
+                            .format(widget.calendarItem.startTime!)
+                            .toString() +
+                        DateFormat(' - MMM dd, yyyy')
+                            .format(widget.calendarItem.endTime!)
+                            .toString(),
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.grey,

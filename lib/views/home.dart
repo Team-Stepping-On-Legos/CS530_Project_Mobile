@@ -47,6 +47,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           _connectivityResult == ConnectivityResult.wifi) {
         if (_isOpen) {
           Navigator.of(context, rootNavigator: true).pop();
+          _getSavedCategories();
+
+          _getCategories().then((_) => setState(() {
+                downloadCategoriesCheck = false;
+              }));
         }
       }
     });
@@ -61,10 +66,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Future<void> isConnected() async {
     // Online Connectivity Initialization
     _connectivityResult = await (Connectivity().checkConnectivity());
-    if(!(_connectivityResult == ConnectivityResult.mobile ||
-          _connectivityResult == ConnectivityResult.wifi)){
-        showConnectivityDialog();
-      }
+    if (!(_connectivityResult == ConnectivityResult.mobile ||
+        _connectivityResult == ConnectivityResult.wifi)) {
+      showConnectivityDialog();
+    }
   }
 
   @override
@@ -74,20 +79,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
-    super.initState();
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2000));
 
     isConnected().then((_) => setState(() {
           isDoneFindingConnection = false;
         }));
-
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2000));
 
     _getSavedCategories();
 
     _getCategories().then((_) => setState(() {
           downloadCategoriesCheck = false;
         }));
+    super.initState();
   }
 
   @override

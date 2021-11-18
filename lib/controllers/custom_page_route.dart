@@ -16,7 +16,7 @@ class CustomPageRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 800);
+  Duration get transitionDuration => const Duration(milliseconds: 500);
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
@@ -29,7 +29,7 @@ class CustomPageRoute<T> extends PageRoute<T> {
     } else {
       const begin = Offset(-1.0, 0.0);
       const end = Offset.zero;
-      final tween = Tween(begin: begin, end: end);
+      final tween = Tween(begin: begin, end: end,);
       final offsetAnimation = animation.drive(tween);
 
       return SlideTransition(

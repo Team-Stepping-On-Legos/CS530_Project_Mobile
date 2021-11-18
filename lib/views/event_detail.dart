@@ -266,70 +266,121 @@ class _EventDetailState extends State<EventDetail> {
         ],
       )),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(5.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.calendarItem.title ?? 'TITLE',
-                  style: const TextStyle(
-                      fontSize: 22,
-                      letterSpacing: 1.0,
-                      fontWeight: FontWeight.bold),
-                ),
-                widget.isMuted
-                    ? Image.asset(
-                        'assets/notification_off.png',
-                        height: 25,
-                        width: 25,
-                      )
-                    : Image.asset('assets/notification_on.png',
-                        height: 25, width: 25)
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left:5.0,right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.calendarItem.title ?? 'TITLE',
+                    style: const TextStyle(
+                        fontSize: 22,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  widget.isMuted
+                      ? Image.asset(
+                          'assets/notification_off.png',
+                          height: 25,
+                          width: 25,
+                        )
+                      : Image.asset('assets/notification_on.png',
+                          height: 25, width: 25)
+                ],
+              ),
             ),
             const SizedBox(
               height: 10,
             ),
             widget.calendarItem.isAllDay!
-                ? Text(
-                    'All Day\n\t\t\t\t\t\t' +
-                        DateFormat('MMM dd, yyyy')
-                            .format(widget.calendarItem.startTime!)
-                            .toString() +
-                        DateFormat(' - MMM dd, yyyy')
-                            .format(widget.calendarItem.endTime!)
-                            .toString(),
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey,
-                      letterSpacing: 1.0,
+                ? Padding(
+                    padding:
+                        const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'ALL DAY',
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w800),
+                        ),
+                        Text(
+                          DateFormat('MMM dd, yyyy')
+                                  .format(widget.calendarItem.startTime!)
+                                  .toString() +
+                              DateFormat(' - MMM dd, yyyy')
+                                  .format(widget.calendarItem.endTime!)
+                                  .toString(),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : Column(
                     children: [
-                      Text(
-                        'STARTS\n\t\t\t\t\t\t' +
-                            DateFormat('MMM dd, yyyy hh:mm a')
-                                .format(widget.calendarItem.startTime!)
-                                .toString(),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
-                          letterSpacing: 1.0,
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 5.0, right: 15.0, top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'STARTS:\t',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey,
+                                  letterSpacing: 1.0,
+                                  fontWeight: FontWeight.w800),
+                            ),
+                            Text(
+                              DateFormat('MMM dd, yyyy hh:mm a')
+                                  .format(widget.calendarItem.startTime!)
+                                  .toString(),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        'ENDS\n\t\t\t\t\t\t' +
-                            DateFormat('MMM dd, yyyy hh:mm a')
-                                .format(widget.calendarItem.endTime!)
-                                .toString(),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
-                          letterSpacing: 1.0,
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 5.0, right: 15.0, top: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'ENDS:\t',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey,
+                                  letterSpacing: 1.0,
+                                  fontWeight: FontWeight.w800),
+                            ),
+                            Text(
+                              DateFormat('MMM dd, yyyy hh:mm a')
+                                  .format(widget.calendarItem.endTime!)
+                                  .toString(),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -337,16 +388,38 @@ class _EventDetailState extends State<EventDetail> {
             const SizedBox(
               height: 25,
             ),
-            Text(
-              'DESCRIPTION\n\t\t\t\t\t\t ${widget.calendarItem.description ?? ''}',
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.grey,
-                letterSpacing: 1.0,
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'DESCRIPTION:',
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w800),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Center(
+                      child: Text(
+                        widget.calendarItem.description ?? '',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(
-              height: 25,
+              height: 10,
             ),
             const Center(
               child: Text(
@@ -357,6 +430,9 @@ class _EventDetailState extends State<EventDetail> {
                     letterSpacing: 1.0,
                     fontWeight: FontWeight.w800),
               ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             _eventSpecificNotificationHistoryList.isEmpty
                 ? const SizedBox(

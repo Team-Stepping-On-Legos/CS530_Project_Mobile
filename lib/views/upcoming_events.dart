@@ -302,32 +302,30 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
         builder: (BuildContext context) => CupertinoActionSheet(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$_apptTitle',
-                    style: const TextStyle(
-                        fontSize: 22,
-                        letterSpacing: 1.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 140,
+                child: Text(
+                  '$_apptTitle',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                      fontSize: 22,
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  isMuted
-                      ? Image.asset(
-                          'assets/notification_off.png',
-                          height: 25,
-                          width: 25,
-                        )
-                      : Image.asset('assets/notification_on.png',
-                          height: 25, width: 25)
-                ],
-              ),
+              isMuted
+                  ? Image.asset(
+                      'assets/notification_off.png',
+                      height: 25,
+                      width: 25,
+                    )
+                  : Image.asset('assets/notification_on.png',
+                      height: 25, width: 25),
             ],
           ),
           message: Column(
@@ -336,6 +334,8 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
               Text(
                 "$_apptDescription",
                 textAlign: TextAlign.left,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.grey,

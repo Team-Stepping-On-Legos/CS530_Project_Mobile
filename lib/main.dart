@@ -19,7 +19,7 @@ import 'models/calendar_item.dart';
 void main() async {
   AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
-      null,
+      'resource://drawable/launcher_icon',
       [
         NotificationChannel(
           channelKey: 'basic_channel',
@@ -96,11 +96,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
-    
 
     // AWESOME NOTIFICATIONS
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
@@ -194,8 +192,32 @@ class _MyAppState extends State<MyApp> {
             });
       }
 
+      // READ SUBSCRIBED CATS
+      List<dynamic> _subscribedCatsList = [];
+      await readContent("categories").then((String? value) {
+        if (value != null) {
+          _subscribedCatsList = jsonDecode(value);
+        }
+      });
+
+      // FIND SUBSCRIBED CATEGORY PRESENT
+      bool _subscribedCatPresent = false;
+
+      if (message.data['categories'] != null) {
+        List<dynamic> _notificationCatList =
+            jsonDecode(message.data['categories']);
+        _notificationCatList.forEach((element) {
+          if (_subscribedCatsList.contains(element)) {
+            _subscribedCatPresent = true;
+          }
+          if (element == "Uncat") {
+            _subscribedCatPresent = true;
+          }
+        });
+      }
+
       // SHOW NOTIFICATION IF NOT MUTED
-      if (!muteNotification) {
+      if (!muteNotification && _subscribedCatPresent) {
         AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: DateTime.now().microsecond,
@@ -205,35 +227,6 @@ class _MyAppState extends State<MyApp> {
               payload: {'eventId': message.data['eventId'] ?? 'null'}),
         );
       }
-      // showDialog(
-      //     context: context,
-      //     builder: (BuildContext context) {
-      //       bool eventFound = false;
-      //       for (var element in _calendarItemsList) {
-      //         if (message.data['eventId'] == element.id) {
-      //           eventFound = true;
-      //           cl = element;
-      //         }
-      //       }
-      //       return AlertDialog(
-      //         title: Text(message.data['title']!),
-      //         content: Text(message.data['body']!),
-      //         actions: [
-      //           TextButton(
-      //             child: eventFound ? const Text("VIEW") : const Text("CLOSE"),
-      //             onPressed: () {
-      //               eventFound
-      //                   ? {
-      //                       Navigator.of(context).pop(),
-      //                       Navigator.of(context).push(MaterialPageRoute(
-      //                           builder: (context) => EventDetail(cl!, false)))
-      //                     }
-      //                   : Navigator.of(context).pop();
-      //             },
-      //           )
-      //         ],
-      //       );
-      //     });
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
@@ -259,5 +252,4 @@ class _MyAppState extends State<MyApp> {
       home: const SplashScreen(),
     );
   }
-
 }

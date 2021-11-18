@@ -115,9 +115,16 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
               Colors.indigo.withOpacity(.01),
             ],
           )),
-          child: Hero(
-            tag: 'HeroOne',
-            child: SfCalendar(
+          child: Stack(children: [
+            const Hero(
+              tag: 'HeroOne',
+              child: Center(
+                child: SizedBox(
+                  height: 50,
+                ),
+              ),
+            ),
+            SfCalendar(
               headerStyle: const CalendarHeaderStyle(
                   textStyle: TextStyle(
                     color: Colors.black,
@@ -180,7 +187,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                 CalendarView.schedule,
               ],
             ),
-          ),
+          ]),
         ),
       ),
     );
@@ -361,10 +368,11 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
               child: const Text('Open'),
               onPressed: () {
                 Navigator.pop(context);
+                // Navigator.of(context).push(
                 Navigator.push(
                     context,
                     // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
-                    CustomPageRoute(EventDetail(cli, isMuted)));
+                    CustomPageRoute(EventDetail(cli, isMuted), "curved"));
               },
             ),
             CupertinoActionSheetAction(

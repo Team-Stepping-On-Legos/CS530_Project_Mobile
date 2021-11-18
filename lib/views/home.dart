@@ -28,6 +28,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+ 
+  bool _isOpen = false;
+  bool isDoneFindingConnection = true;
+  bool downloadCategoriesCheck = true;
+  late AnimationController _animationController;
+
   // Online Connectivity Initialization
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
@@ -57,18 +63,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  bool _isOpen = false;
-  bool isDoneFindingConnection = true;
-
-  bool downloadCategoriesCheck = true;
-  late AnimationController _animationController;
 
   Future<void> isConnected() async {
     // Online Connectivity Initialization
     _connectivityResult = await (Connectivity().checkConnectivity());
     if (!(_connectivityResult == ConnectivityResult.mobile ||
         _connectivityResult == ConnectivityResult.wifi)) {
+      downloadCategoriesCheck = true;
       showConnectivityDialog();
+    } else {
+      setState(() {
+        isDoneFindingConnection = false;
+
+        _getSavedCategories();
+
+        _getCategories().then((_) => setState(() {
+              downloadCategoriesCheck = false;
+            }));
+      });
     }
   }
 
@@ -82,15 +94,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000));
 
-    isConnected().then((_) => setState(() {
-          isDoneFindingConnection = false;
-        }));
-
-    _getSavedCategories();
-
-    _getCategories().then((_) => setState(() {
-          downloadCategoriesCheck = false;
-        }));
+    isConnected();
     super.initState();
   }
 
@@ -204,10 +208,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     onPressed: () async {
                       FBM fbm = FBM();
-                      for (var item in categoryList) {
-                        fbm.unSubscribeTopic(item.name);
-                      }
-                      fbm.subscribeTopics(selectedCategoryList);
+                      // for (var item in categoryList) {
+                      //   fbm.unSubscribeTopic(item.name);
+                      // }
+                      // fbm.subscribeTopics(selectedCategoryList);
                       await writeContent("categories", selectedCategoryList);
 
                       _animationController.forward();
@@ -333,8 +337,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
                 CustomPageRoute(NotificationHistory(
                   subscribedCategories:
-                      getListAsCommaSepratedString(readCategoryList, "Uncat"),
-                )));
+                      getListAsCommaSepratedString(readCategoryList, "Uncat"),                      
+                ),""));
           },
           child: const HomeCardWidget(
             assetName: 'upcoming',
@@ -376,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 CustomPageRoute(UpcomingViewCalendar(
                   subscribedCategories:
                       getListAsCommaSepratedString(readCategoryList, "Uncat"),
-                )));
+                ),""));
 
             // Navigator.push(
             //     context,

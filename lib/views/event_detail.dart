@@ -311,7 +311,7 @@ class _EventDetailState extends State<EventDetail> {
                 : Column(
                     children: [
                       Text(
-                        'Starts\n\t\t\t\t\t\t' +
+                        'STARTS\n\t\t\t\t\t\t' +
                             DateFormat('MMM dd, yyyy hh:mm a')
                                 .format(widget.calendarItem.startTime!)
                                 .toString(),
@@ -322,7 +322,7 @@ class _EventDetailState extends State<EventDetail> {
                         ),
                       ),
                       Text(
-                        'Ends\n\t\t\t\t\t\t' +
+                        'ENDS\n\t\t\t\t\t\t' +
                             DateFormat('MMM dd, yyyy hh:mm a')
                                 .format(widget.calendarItem.endTime!)
                                 .toString(),

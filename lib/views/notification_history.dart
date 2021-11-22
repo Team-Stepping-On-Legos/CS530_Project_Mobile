@@ -6,7 +6,10 @@ import 'package:cs530_mobile/widgets/notification_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 class NotificationHistory extends StatefulWidget {
   final String subscribedCategories;
@@ -50,6 +53,16 @@ class _NotificationHistoryState extends State<NotificationHistory> {
     double _w = MediaQuery.of(context).size.width;
     return ModalProgressHUD(
       inAsyncCall: _downloadNotificationDataCheck,
+      progressIndicator: Center(
+        child: Lottie.asset(
+          'assets/loading.json',
+          repeat: true,
+          reverse: false,
+          animate: true,
+          height: 150,
+          width: MediaQuery.of(context).size.width - 10,
+        ),
+      ),
       child: RefreshIndicator(
         onRefresh: () => _getNotificationHistory(),
         child: Scaffold(
@@ -86,16 +99,54 @@ class _NotificationHistoryState extends State<NotificationHistory> {
               ],
             )),
             child: AnimationLimiter(
-              child: ListView(
-                physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-                reverse: true,
-                shrinkWrap: true,
-                children: [                  
-                  ..._notificationHistoryList.reversed.map((event) {
-                    return Center(child: NotificationTile(event,_notificationHistoryList.indexOf(event)));
-                  }),
-                ],
+              child: Hero(
+                tag: 'HeroOne',
+                child: StickyGroupedListView(
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  reverse: true,
+                  order: StickyGroupedListOrder.DESC,
+                  elements: _notificationHistoryList,
+                  itemBuilder: (_, NotificationHistoryData element) {
+                    return Center(
+                        child: NotificationTile(element,
+                            _notificationHistoryList.indexOf(element)));
+                  },
+                  groupBy: (NotificationHistoryData element) => DateTime(
+                      DateTime.parse(element.time.toString()).toLocal().year,
+                      DateTime.parse(element.time.toString()).toLocal().month,
+                      DateTime.parse(element.time.toString()).toLocal().day),
+                  groupSeparatorBuilder: (NotificationHistoryData element) =>
+                      Container(
+                    decoration:
+                        BoxDecoration(color: Colors.transparent.withAlpha(20)),
+                    height: 50,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 220,
+                        decoration: BoxDecoration(
+                          color: Colors.indigo.withAlpha(60),
+                          border: Border.all(
+                            color: Colors.black87.withAlpha(20),
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            DateFormat("MMM dd, yyyy  EEEE").format(
+                                DateTime.parse(element.time.toString())
+                                    .toLocal()),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

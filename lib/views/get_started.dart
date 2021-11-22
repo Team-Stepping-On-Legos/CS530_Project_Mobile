@@ -138,6 +138,12 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
         : const HomeScreen();
   }
 
+  @override
+  void dispose() {
+    _bc.dispose();
+    super.dispose();
+  }
+
   void signInAnonymously() {
     _auth.signInAnonymously().then((result) {
       setState(() {

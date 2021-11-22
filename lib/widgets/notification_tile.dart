@@ -2,6 +2,7 @@ import 'package:cs530_mobile/models/notification_history_data.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -12,6 +13,13 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+  var dateUtc = ntData.time;
+  var strToDateTime = DateTime.parse(dateUtc.toString());
+  final convertLocal = strToDateTime.toLocal();
+  var newFormat = DateFormat("hh:mm aaa");
+  String dateLocal = newFormat.format(convertLocal);
+
     return AnimationConfiguration.staggeredList(
       position: n,
       delay: const Duration(milliseconds: 20),
@@ -23,10 +31,11 @@ class NotificationTile extends StatelessWidget {
           horizontalOffset: -300,
           verticalOffset: -250,
           curve: Curves.easeInCubic,
-          child: Card(
+          child: Card(     
+            color: Colors.black87.withAlpha(20),                           
             elevation: 4.0,
             margin: const EdgeInsets.all(10.0),
-            shape: RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(              
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -35,37 +44,39 @@ class NotificationTile extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0, right: 10.0),
                   child: Text(
-                    formatDate(DateTime.parse(ntData.time), [
-                      mm,
-                      '-',
-                      dd,
-                      '-',
-                      yyyy,
-                      ' ',
-                      hh,
-                      ':',
-                      nn,
-                      ' ',
-                      am
-                    ]).toString(),
-                    style: const TextStyle(
-                      color: Colors.grey,
+                   dateLocal.toString(),
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 ListTile(
-                  title: Text(ntData.title),
-                  subtitle: Text(ntData.message),
+                  title: Text(ntData.title,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.white,
+                letterSpacing: 1.0,
+              ),),
+                  subtitle: Text(ntData.message,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+              ),),
                   isThreeLine: true,
-                  leading:  Lottie.asset(
-                      'assets/notification_bell.json',
-                      repeat: true,                  
-                      animate: true,
-                      height: 150,
-                      width: 50,
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white.withOpacity(0.5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Lottie.asset(
+                        'assets/notification_bell.json',
+                        repeat: true,
+                        animate: true,
+                        height: 50,
+                        width: 50,
+                      ),
                     ),
-                  trailing: const Icon(Icons.more_vert),
+                  ),
+                  // trailing: const Icon(Icons.more_vert),
                 ),
               ],
             ),

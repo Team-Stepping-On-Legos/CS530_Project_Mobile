@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cs530_mobile/controllers/api.dart';
+import 'package:cs530_mobile/controllers/custom_page_route.dart';
 import 'package:cs530_mobile/controllers/fbm.dart';
-import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/controllers/utils.dart';
 import 'package:cs530_mobile/models/category_data.dart';
 import 'package:cs530_mobile/views/notification_history.dart';
 import 'package:cs530_mobile/views/upcoming_events.dart';
@@ -25,24 +28,82 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+ 
+  bool _isOpen = false;
+  bool isDoneFindingConnection = true;
   bool downloadCategoriesCheck = true;
   late AnimationController _animationController;
+
+  // Online Connectivity Initialization
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+
+  // Initialize a variable with [none] status to avoid nulls at startup
+  ConnectivityResult _connectivityResult = ConnectivityResult.none;
+
+  // Future for connectivity
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectivityResult = result;
+      if (!(_connectivityResult == ConnectivityResult.mobile ||
+          _connectivityResult == ConnectivityResult.wifi)) {
+        showConnectivityDialog();
+      }
+      if (_connectivityResult == ConnectivityResult.mobile ||
+          _connectivityResult == ConnectivityResult.wifi) {
+        if (_isOpen) {
+          Navigator.of(context, rootNavigator: true).pop();
+          _getSavedCategories();
+
+          _getCategories().then((_) => setState(() {
+                downloadCategoriesCheck = false;
+              }));
+        }
+      }
+    });
+  }
+
+
+  Future<void> isConnected() async {
+    // Online Connectivity Initialization
+    _connectivityResult = await (Connectivity().checkConnectivity());
+    if (!(_connectivityResult == ConnectivityResult.mobile ||
+        _connectivityResult == ConnectivityResult.wifi)) {
+      downloadCategoriesCheck = true;
+      showConnectivityDialog();
+    } else {
+      setState(() {
+        isDoneFindingConnection = false;
+
+        _getSavedCategories();
+
+        _getCategories().then((_) => setState(() {
+              downloadCategoriesCheck = false;
+            }));
+      });
+    }
+  }
+
   @override
   initState() {
-    super.initState();
+    _isOpen = false;
+    // CONNCETIVITY
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000));
 
-    _getSavedCategories();
-
-    _getCategories().then((_) => setState(() {
-          downloadCategoriesCheck = false;
-        }));
+    isConnected();
+    super.initState();
   }
 
   @override
   dispose() {
+    if (_connectivitySubscription != null) {
+      _connectivitySubscription!.cancel();
+    }
+
     super.dispose();
   }
 
@@ -61,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   _getSavedCategories() {
     readContent("categories").then((String? value) {
       setState(() {
-        if(value!=null){
+        if (value != null) {
           readCategoryList = jsonDecode(value);
         }
       });
@@ -71,16 +132,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   _showDialogCategories() {
     showDialog(
         context: context,
+        barrierDismissible: true,
+        barrierColor: Colors.deepPurple.withAlpha(20),
         builder: (BuildContext context) {
           List<String> selectedCategoryList = [];
-          if(readCategoryList.isNotEmpty){
-            for (var element in readCategoryList) {selectedCategoryList.add(element);}
+          if (readCategoryList.isNotEmpty) {
+            for (var element in readCategoryList) {
+              selectedCategoryList.add(element);
+            }
           }
           //Here we will build the content of the dialog
           return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-                color: Colors.grey.withAlpha(20),
+              color: Colors.grey.withAlpha(20),
               child: AlertDialog(
                 backgroundColor: Colors.grey.withAlpha(20),
                 title: Center(
@@ -94,31 +159,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 content: categoryList.isNotEmpty
-                    ? Column(                  
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Lottie.asset(
-                          'assets/groucy_lady.json',
-                          repeat: true,
-                          reverse: true,
-                          animate: true,
-                          height: 150,
-                          width: 150,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        MultiSelectChip(
-                          categoryList,
-                          readCategoryList,
-                          onSelectionChanged: (selectedList) {
-                            setState(() {
-                              selectedCategoryList = selectedList;
-                            });
-                          },
-                        ),                    
-                      ],
-                    )                
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Hero(
+                            tag: 'HeroOne',
+                            child: Lottie.asset(
+                              'assets/groucy_lady.json',
+                              repeat: true,
+                              reverse: true,
+                              animate: true,
+                              height: 150,
+                              width: 150,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          MultiSelectChip(
+                            categoryList,
+                            readCategoryList,
+                            onSelectionChanged: (selectedList) {
+                              setState(() {
+                                selectedCategoryList = selectedList;
+                              });
+                            },
+                          ),
+                        ],
+                      )
                     : Lottie.asset(
                         'assets/404.json',
                         repeat: true,
@@ -140,12 +208,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     onPressed: () async {
                       FBM fbm = FBM();
-                      for (var item in categoryList) {
-                    fbm.unSubscribeTopic(item.name);
-                      }
-                      fbm.subscribeTopics(selectedCategoryList);
+                      // for (var item in categoryList) {
+                      //   fbm.unSubscribeTopic(item.name);
+                      // }
+                      // fbm.subscribeTopics(selectedCategoryList);
                       await writeContent("categories", selectedCategoryList);
-          
+
                       _animationController.forward();
                       await Future.delayed(const Duration(seconds: 2), () {});
                       _animationController.reverse();
@@ -163,7 +231,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ModalProgressHUD(
-        inAsyncCall: downloadCategoriesCheck,
+        progressIndicator: Center(
+          child: Lottie.asset(
+            'assets/loading.json',
+            repeat: true,
+            reverse: false,
+            animate: true,
+            height: 150,
+            width: MediaQuery.of(context).size.width - 10,
+          ),
+        ),
+        inAsyncCall: isDoneFindingConnection && downloadCategoriesCheck,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -172,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               snap: false,
               floating: false,
               elevation: 0,
-              expandedHeight: 190.0,
+              expandedHeight: MediaQuery.of(context).size.height/3.6,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 titlePadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -228,10 +306,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           0.9,
         ],
         colors: [
-          Colors.white.withOpacity(.5),
-          Colors.indigo.shade300.withOpacity(.5),
-          Colors.deepPurple.shade300.withOpacity(.5),
-          Colors.indigo.withOpacity(.5),
+          Colors.deepPurple.shade300.withOpacity(.3),
+          Colors.indigo.shade300.withOpacity(.3),
+          Colors.deepPurple.shade300.withOpacity(.3),
+          Colors.indigo.shade300.withOpacity(.3),
         ],
       )),
       child: BottomAppBar(
@@ -254,10 +332,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onTap: () {
             HapticFeedback.heavyImpact();
             //Here we will build the content of the dialog
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => NotificationHistory(
-                      subscribedCategories: _getSavedCategoriesAsString(),
-                    )));
+            Navigator.push(
+                context,
+                // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
+                CustomPageRoute(NotificationHistory(
+                  subscribedCategories:
+                      getListAsCommaSepratedString(readCategoryList, "Uncat"),                      
+                ),""));
           },
           child: const HomeCardWidget(
             assetName: 'upcoming',
@@ -293,9 +374,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             //         );
             //       });
             // }
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UpcomingViewCalendar(
-                    subscribedCategories: _getSavedCategoriesAsString())));
+
+            Navigator.push(
+                context,
+                CustomPageRoute(UpcomingViewCalendar(
+                  subscribedCategories:
+                      getListAsCommaSepratedString(readCategoryList, "Uncat"),
+                ),""));
+
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => UpcomingViewCalendar(
+            //       subscribedCategories: _getSavedCategoriesAsString(),
+            //     )));
           },
           child: const HomeCardWidget(
             assetName: 'marking_calendar',
@@ -317,8 +408,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             HapticFeedback.heavyImpact();
             exit(0);
           },
-          child: const HomeCardWidget(
-              assetName: 'exit', name: 'EXIT\nAPP'),
+          child: const HomeCardWidget(assetName: 'exit', name: 'EXIT\nAPP'),
         ),
 
         // ALL EVENTS
@@ -336,10 +426,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  String _getSavedCategoriesAsString() {
-    return (readCategoryList.join(',') == null)
-        ? "Uncat"
-        : readCategoryList.join(',').toString() + ",Uncat";
+  showConnectivityDialog() {
+    setState(() {
+      _isOpen = true;
+    });
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.deepPurple.withAlpha(20),
+        builder: (BuildContext context) {
+          //Here we will build the content of the dialog
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: WillPopScope(
+              onWillPop: () async => false,
+              child: Dialog(
+                backgroundColor: Colors.grey.withAlpha(20),
+                child: Lottie.asset(
+                  'assets/no_internet.json',
+                  repeat: true,
+                  reverse: false,
+                  animate: true,
+                  height: MediaQuery.of(context).size.height - 80,
+                  width: MediaQuery.of(context).size.width - 10,
+                ),
+              ),
+            ),
+          );
+        }).then((_) => setState(() => _isOpen = false));
   }
 }
 

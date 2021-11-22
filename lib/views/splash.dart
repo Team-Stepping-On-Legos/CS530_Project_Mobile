@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cs530_mobile/views/get_started.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,9 +16,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+
+
   @override
   void initState() {
     super.initState();
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -56,18 +61,20 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: CircleAvatar(
                     backgroundColor: Colors.grey[100],
                     radius: 90.0,
-                    child: Lottie.asset('assets/subscriber.json',
-                        repeat: true,
-                        reverse: true,
-                        animate: true,),
+                    child: Lottie.asset(
+                      'assets/subscriber.json',
+                      repeat: true,
+                      reverse: true,
+                      animate: true,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(
                 height: 45,
               ),
-              FittedBox(                
-                fit:  BoxFit.contain,
+              FittedBox(
+                fit: BoxFit.contain,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 60.0),
                   child: AnimatedTextKit(

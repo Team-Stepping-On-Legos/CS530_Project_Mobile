@@ -3,9 +3,11 @@ import 'dart:ffi';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
-import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/controllers/custom_page_route.dart';
+import 'package:cs530_mobile/controllers/utils.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
 import 'package:cs530_mobile/views/calendar.dart';
+import 'package:cs530_mobile/views/event_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,8 +28,7 @@ class UpcomingViewCalendar extends StatefulWidget {
   _UpcomingViewCalendarState createState() => _UpcomingViewCalendarState();
 }
 
-class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
-    with TickerProviderStateMixin {
+class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
   bool _downloadCalendarItemsDataCheck = true;
   List<CalendarItem> _calendarItemsList = [];
   List<dynamic> _mutedEventsList = [];
@@ -39,6 +40,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
         Iterable list = json.decode(response.body);
         _calendarItemsList =
             list.map((model) => CalendarItem.fromJson(model)).toList();
+            // print("${widget.subscribedCategories}, ${_calendarItemsList.length} IS THE CALENDAR ITEMS LENGTH");
       });
     });
   }
@@ -68,13 +70,26 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: _downloadCalendarItemsDataCheck,
+      progressIndicator: Center(
+        child: Lottie.asset(
+          'assets/loading.json',
+          repeat: true,
+          reverse: false,
+          animate: true,
+          height: 150,
+          width: MediaQuery.of(context).size.width - 10,
+        ),
+      ),
       child: Scaffold(
         appBar: CupertinoNavigationBar(
           backgroundColor: Colors.deepPurple,
-          leading: IconButton(
-            color: Colors.white,
-            icon: const Icon(Icons.navigate_before_outlined),
-            onPressed: () => Navigator.of(context).pop(),
+          leading: Material(
+            color: Colors.deepPurple,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.navigate_before_outlined),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
           middle: const Text(
             'EVENTS CALENDAR',
@@ -101,67 +116,79 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
               Colors.indigo.withOpacity(.01),
             ],
           )),
-          child: SfCalendar(
-            headerStyle: const CalendarHeaderStyle(
-                textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  letterSpacing: 1.5,
+          child: Stack(children: [
+            const Hero(
+              tag: 'HeroOne',
+              child: Center(
+                child: SizedBox(
+                  height: 50,
                 ),
-                backgroundColor: Colors.transparent),
-            backgroundColor: Colors.transparent,
-            dataSource: _getCalendarDataSource(_calendarItemsList),
-            onTap: calendarTapped,
-            view: CalendarView.schedule,
-            monthViewSettings: const MonthViewSettings(showAgenda: true),
-            scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
-                ScheduleViewMonthHeaderDetails details) {
-              final String monthName = _getMonthDate(details.date.month);
-              return Stack(
-                children: [
-                  Image(
-                    image: ExactAssetImage(
-                        'assets/monthImages/' + monthName + '.png'),
-                    fit: BoxFit.cover,
-                    width: details.bounds.width,
-                    height: details.bounds.height,
-                    color: Colors.white.withOpacity(0.9),
-                    colorBlendMode: BlendMode.dstATop,
+              ),
+            ),
+            SfCalendar(
+              headerStyle: const CalendarHeaderStyle(
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    letterSpacing: 1.5,
                   ),
-                  Center(
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        WavyAnimatedText(
-                          monthName.toUpperCase() +
-                              ' ' +
-                              details.date.year.toString(),
-                          textStyle: GoogleFonts.robotoCondensed(
+                  backgroundColor: Colors.transparent),
+              backgroundColor: Colors.transparent,
+              dataSource: _getCalendarDataSource(_calendarItemsList),
+              onTap: calendarTapped,
+              view: CalendarView.schedule,
+              monthViewSettings: const MonthViewSettings(showAgenda: true),
+              scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
+                  ScheduleViewMonthHeaderDetails details) {
+                final String monthName = _getMonthDate(details.date.month);
+                return Stack(
+                  children: [
+                    Image(
+                      image: ExactAssetImage(
+                          'assets/monthImages/' + monthName + '.png'),
+                      fit: BoxFit.cover,
+                      width: details.bounds.width,
+                      height: details.bounds.height,
+                      color: Colors.black87.withAlpha(130),
+                      colorBlendMode: BlendMode.dstATop,
+                    ),
+                    Center(
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          WavyAnimatedText(
+                            monthName.toUpperCase() +
+                                ' ' +
+                                details.date.year.toString(),
+                            textStyle: GoogleFonts.robotoCondensed(
                               color: Colors.white70,
                               fontSize: 24,
                               letterSpacing: 1.5,
                               wordSpacing: 2.0,
-                              fontWeight: FontWeight.w900),
-                          speed: const Duration(milliseconds: 200),
-                        ),
-                      ],
-                      totalRepeatCount: 1,
-                      pause: const Duration(milliseconds: 1000),
-                      displayFullTextOnTap: true,
-                      stopPauseOnTap: true,
-                    ),
-                  )
-                ],
-              );
-            },
-            showDatePickerButton: true,
-            allowViewNavigation: true,
-            allowedViews: const [
-              CalendarView.month,
-              CalendarView.week,
-              CalendarView.day,
-              CalendarView.schedule,
-            ],
-          ),
+                              fontWeight: FontWeight.w900,
+                              decoration: TextDecoration.none,
+                            ),
+                            speed: const Duration(milliseconds: 200),
+                          ),
+                        ],
+                        totalRepeatCount: 1,
+                        pause: const Duration(milliseconds: 1000),
+                        displayFullTextOnTap: true,
+                        stopPauseOnTap: true,
+                      ),
+                    )
+                  ],
+                );
+              },
+              showDatePickerButton: true,
+              allowViewNavigation: true,
+              allowedViews: const [
+                CalendarView.month,
+                CalendarView.week,
+                CalendarView.day,
+                CalendarView.schedule,
+              ],
+            ),
+          ]),
         ),
       ),
     );
@@ -231,6 +258,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       _endTimeText = '',
       _dateText = '',
       _timeDetails = '';
+  CalendarItem cli = CalendarItem();
 
   void calendarTapped(CalendarTapDetails details) {
     if (details.targetElement == CalendarElement.appointment ||
@@ -238,6 +266,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       final Appointment appointmentDetails = details.appointments![0];
 
       _apptID = appointmentDetails.id.toString();
+      cli.id = appointmentDetails.id.toString();
 
       setState(() {
         if (_mutedEventsList != null) {
@@ -248,7 +277,15 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
       });
 
       _apptTitle = appointmentDetails.subject;
+      cli.title = appointmentDetails.subject;
+
       _apptDescription = appointmentDetails.notes ?? '';
+      cli.description = appointmentDetails.notes ?? '';
+      cli.startTime = appointmentDetails.startTime;
+      cli.endTime = appointmentDetails.endTime;
+      cli.title = appointmentDetails.subject;
+      cli.isAllDay = appointmentDetails.isAllDay;
+
       _dateText = DateFormat('MMMM dd, yyyy')
           .format(appointmentDetails.startTime)
           .toString();
@@ -266,26 +303,30 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
         builder: (BuildContext context) => CupertinoActionSheet(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$_apptTitle',
-                    style: const TextStyle(
-                        fontSize: 22,
-                        letterSpacing: 1.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 140,
+                child: Text(
+                  '$_apptTitle',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                      fontSize: 22,
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  isMuted?Image.asset('assets/notification_off.png', height: 25, width: 25,):
-                  Image.asset('assets/notification_on.png', height: 25, width: 25)
-                ],
-              ),
+              isMuted
+                  ? Image.asset(
+                      'assets/notification_off.png',
+                      height: 25,
+                      width: 25,
+                    )
+                  : Image.asset('assets/notification_on.png',
+                      height: 25, width: 25),
             ],
           ),
           message: Column(
@@ -293,19 +334,23 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
             children: [
               Text(
                 "$_apptDescription",
+                textAlign: TextAlign.left,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.grey,
                   letterSpacing: 1.0,
                 ),
               ),
+              const SizedBox(height: 5.0),
               Text(
                 "$_dateText",
                 style: const TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey,
-                  letterSpacing: 1.0,
-                ),
+                    fontSize: 15,
+                    color: Colors.grey,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w800),
               ),
               Text(
                 _timeDetails!,
@@ -324,6 +369,11 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar>
               child: const Text('Open'),
               onPressed: () {
                 Navigator.pop(context);
+                // Navigator.of(context).push(
+                Navigator.push(
+                    context,
+                    // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
+                    CustomPageRoute(EventDetail(cli, isMuted), "curved"));
               },
             ),
             CupertinoActionSheetAction(
@@ -374,15 +424,27 @@ DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
   for (var cli in _calendarItemsList) {
     appointments.add(Appointment(
         id: cli.id,
-        startTime: cli.startTime ?? DateTime.now(),
-        endTime: cli.endTime ?? DateTime.now().add(const Duration(minutes: 1)),
+        startTime: _getLocalTime(cli.startTime ?? DateTime.now()),
+        endTime: _getLocalTime(
+            cli.endTime ?? DateTime.now().add(const Duration(minutes: 1))),
         isAllDay: cli.isAllDay ?? false,
         subject: cli.summary ?? '',
         notes: cli.description ?? '',
-        color: Colors.blue,
+        color: cli.category != null
+            ? Colors.indigo.withAlpha(90)
+            : Colors.teal.withAlpha(90),
         startTimeZone: '',
         endTimeZone: ''));
   }
 
   return DataSource(appointments);
+}
+
+DateTime _getLocalTime(DateTime dt) {
+  var dateUtc = dt;
+  var strToDateTime = DateTime.parse(dateUtc.toString());
+  final convertLocal = strToDateTime.toLocal();
+  // var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
+  // String dateLocal = newFormat.format(convertLocal);
+  return convertLocal;
 }

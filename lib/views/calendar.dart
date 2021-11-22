@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:cs530_mobile/controllers/api.dart';
-import 'package:cs530_mobile/controllers/localdb.dart';
+import 'package:cs530_mobile/controllers/utils.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
 import 'package:cs530_mobile/views/upcoming_events.dart';
 import 'package:date_format/date_format.dart';

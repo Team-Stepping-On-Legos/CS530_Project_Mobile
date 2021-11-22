@@ -19,6 +19,9 @@ CalendarItem _$CalendarItemFromJson(Map<String, dynamic> json) => CalendarItem(
       notifications: (json['notifications'] as List<dynamic>?)
           ?.map((e) => e as NotificationHistoryData)
           .toList(),
+      eventCategories: (json['eventCategories'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       calendarId: json['calendarId'] as String?,
       title: json['title'] as String?,
       category: json['category'] as String?,

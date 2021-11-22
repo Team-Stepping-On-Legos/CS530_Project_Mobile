@@ -18,6 +18,7 @@ Future<File> get _mutedeventsFile async {
   return File('$path/mutedevents.txt');
 }
 
+
 Future<String?> readContent(String fileName) async {
   final File file;
   try {
@@ -32,15 +33,14 @@ Future<String?> readContent(String fileName) async {
         file = await _categoriesFile;
         break;
     }
-    if(file.existsSync()){
+    if (file.existsSync()) {
       String contents = await file.readAsString();
       print("READING FROM FILE: $contents");
       // Returning the contents of the file
       return contents;
-    }else{
+    } else {
       return null;
     }
-   
   } catch (e) {
     // If encountering an error, return
     return 'Error!';
@@ -62,7 +62,15 @@ Future<File> writeContent(String fileName, List<dynamic> object) async {
   }
 
   String jsonObject = jsonEncode(object);
-    print("WRITING TO FILE: $jsonObject");
+  print("WRITING TO FILE: $jsonObject");
   // Write the file
   return file.writeAsString(jsonObject);
 }
+
+
+  String getListAsCommaSepratedString(List<dynamic> ls, String additonalString) {
+    return (ls.join(',') == null)
+        ? additonalString
+        : ls.join(',').toString() + ",$additonalString";
+  }
+  

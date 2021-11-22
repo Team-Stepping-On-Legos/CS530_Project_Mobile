@@ -12,13 +12,18 @@ class API {
 
   
   static Future getNotificationHistory(String categories) {
-    var url = baseUrl + "/notify/previousByCategory?category=$categories";
+    var url = baseUrl + "/notify/previousByCategory?categories=$categories";
     return http.get(Uri.parse(url));
   }
 
   
   static Future getCalendarItems(String categories) {
-    var url = baseUrl + "/api/calendar/list";
+    var url = baseUrl + "/api/events?categories=$categories";
+    return http.get(Uri.parse(url));
+  }
+
+  static Future getAllCalendarItems() {
+    var url = baseUrl + "/api/events";
     return http.get(Uri.parse(url));
   }
 }

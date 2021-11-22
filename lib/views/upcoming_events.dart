@@ -40,6 +40,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
         Iterable list = json.decode(response.body);
         _calendarItemsList =
             list.map((model) => CalendarItem.fromJson(model)).toList();
+            // print("${widget.subscribedCategories}, ${_calendarItemsList.length} IS THE CALENDAR ITEMS LENGTH");
       });
     });
   }

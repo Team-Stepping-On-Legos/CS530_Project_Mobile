@@ -250,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               snap: false,
               floating: false,
               elevation: 0,
-              expandedHeight: 190.0,
+              expandedHeight: MediaQuery.of(context).size.height/3.6,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 titlePadding: const EdgeInsets.symmetric(horizontal: 20),

@@ -11,6 +11,7 @@ class CalendarItem {
 	DateTime? startTime;
 	DateTime? endTime;
 	List<NotificationHistoryData>? notifications;
+	List<String>? eventCategories;
 	String? calendarId;
 	String? title;
 	String? category;
@@ -25,6 +26,7 @@ class CalendarItem {
 		this.startTime, 
 		this.endTime, 
 		this.notifications, 
+    this.eventCategories,
 		this.calendarId, 
 		this.title, 
 		this.category, 

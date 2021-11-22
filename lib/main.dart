@@ -145,7 +145,8 @@ class _MyAppState extends State<MyApp> {
             (value) => AwesomeNotifications().setGlobalBadgeCounter(value - 1));
       }
 
-      await API.getCalendarItems('All').then((response) {
+      await API.getAllCalendarItems().then((response) {
+        // await API.getCalendarItems('All').then((response) {
         Iterable list = json.decode(response.body);
         _calendarItemsList =
             list.map((model) => CalendarItem.fromJson(model)).toList();
@@ -174,6 +175,7 @@ class _MyAppState extends State<MyApp> {
     //FCM ON FOREGROUND MESSAGE RECIEVED
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print("message recieved");
+      print(message.data);
       List<dynamic> _mutedEventsList = [];
       await readContent("mutedevents").then((String? value) {
         if (value != null) {
@@ -208,6 +210,8 @@ class _MyAppState extends State<MyApp> {
             jsonDecode(message.data['categories']);
         _notificationCatList.forEach((element) {
           if (_subscribedCatsList.contains(element)) {
+            // print(_subscribedCatsList);
+            // print(_subscribedCatPresent);
             _subscribedCatPresent = true;
           }
           if (element == "Uncat") {

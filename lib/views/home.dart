@@ -19,6 +19,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -227,6 +229,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         });
   }
 
+_awesomeMessage(){
+  AwesomeNotifications().createNotification(
+  content: NotificationContent(
+      id: 10,
+      channelKey: 'basic_channel',
+      title: 'Simple Notification',
+      body: 'Please send this message'
+  )
+);
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -407,6 +420,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onTap: () {
             HapticFeedback.heavyImpact();
             exit(0);
+            //_awesomeMessage();
           },
           child: const HomeCardWidget(assetName: 'exit', name: 'EXIT\nAPP'),
         ),

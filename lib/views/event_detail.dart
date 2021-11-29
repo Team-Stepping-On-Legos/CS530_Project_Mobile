@@ -386,8 +386,39 @@ class _EventDetailState extends State<EventDetail> {
                     ],
                   ),
             const SizedBox(
+              height: 15,
+            ),
+
+              Padding(
+                    padding:
+                        const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'CATEGORIES',
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w800),
+                        ),
+                        Text(
+                            widget.calendarItem.eventCategories.toString().replaceAll('[', '').replaceAll(']', ''),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+            const SizedBox(
               height: 25,
             ),
+
+
             Padding(
               padding: const EdgeInsets.only(left: 5.0),
               child: Column(

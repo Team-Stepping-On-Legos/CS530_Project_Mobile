@@ -44,7 +44,7 @@ void main() async {
   // Creating Notification Channel for Android
   AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
-      // 'resource://drawable/launcher_icon',
+      // 'resource://drawable/ic_launcher.png',
       null,
       [
         NotificationChannel(
@@ -54,7 +54,7 @@ void main() async {
           defaultColor: const Color(0xFF9D50DD),
           importance: NotificationImportance.High,
           channelShowBadge: true,
-          // ledColor: Colors.white
+          ledColor: Colors.white
         )
       ]);
 

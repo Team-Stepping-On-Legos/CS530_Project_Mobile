@@ -281,6 +281,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
 
       _apptDescription = appointmentDetails.notes ?? '';
       cli.description = appointmentDetails.notes ?? '';
+      cli.eventCategories = appointmentDetails.resourceIds as List<String>? ?? ['Uncat'];
       cli.startTime = appointmentDetails.startTime;
       cli.endTime = appointmentDetails.endTime;
       cli.title = appointmentDetails.subject;
@@ -343,7 +344,11 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                   letterSpacing: 1.0,
                 ),
               ),
+
+              
               const SizedBox(height: 5.0),
+              
+              
               Text(
                 "$_dateText",
                 style: const TextStyle(
@@ -359,6 +364,14 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                   color: Colors.grey,
                   letterSpacing: 1.0,
                 ),
+              ),
+
+              Text(
+                'Catergories: '+cli.eventCategories.toString().replaceAll('[', '').replaceAll(']', ''),
+                style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                    letterSpacing: 1.0,),
               ),
             ],
           ),
@@ -430,6 +443,7 @@ DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
         isAllDay: cli.isAllDay ?? false,
         subject: cli.summary ?? '',
         notes: cli.description ?? '',
+        resourceIds: cli.eventCategories ?? ['Uncat'],
         color: cli.category != null
             ? Colors.indigo.withAlpha(90)
             : Colors.teal.withAlpha(90),

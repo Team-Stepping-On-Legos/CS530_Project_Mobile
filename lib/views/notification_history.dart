@@ -112,6 +112,8 @@ class _NotificationHistoryState extends State<NotificationHistory> {
                         child: NotificationTile(element,
                             _notificationHistoryList.indexOf(element)));
                   },
+                  itemComparator: (NotificationHistoryData element1, NotificationHistoryData element2) =>
+                                                                 element1.time.compareTo(element2.time),
                   groupBy: (NotificationHistoryData element) => DateTime(
                       DateTime.parse(element.time.toString()).toLocal().year,
                       DateTime.parse(element.time.toString()).toLocal().month,

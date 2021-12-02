@@ -18,11 +18,11 @@ import 'models/calendar_item.dart';
 
 // Main Class
 void main() async {
-  // Ensure intialization of Firbase
+  // Ensure initialization of Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp()
       // .whenComplete(() {
-      //   print("Completed intializing Firebase Core");
+      //   print("Completed initializing Firebase Core");
       // })
       ;
 
@@ -76,7 +76,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // Customized Message Handler
 messageHandler(RemoteMessage message) async {
     // Print Message
-      print("message recieved ${message.data}");
+      print("message received ${message.data}");
 
       // Read list of muted events stored in local file
       List<dynamic> _mutedEventsList = [];
@@ -86,7 +86,7 @@ messageHandler(RemoteMessage message) async {
         }
       });
 
-      // Initalize mute boolean
+      // Initialize mute boolean
       bool muteNotification = false;
       // If muted events present check condition to change state of mute boolean
       if (_mutedEventsList.isNotEmpty) {
@@ -147,7 +147,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // State Intialization
+  // State Initialization
   @override
   void initState() {
     super.initState();
@@ -160,7 +160,7 @@ class _MyAppState extends State<MyApp> {
             builder: (context) => AlertDialog(
                   title: const Text('Allow Notifications'),
                   content: const Text(
-                      'Volutary Spam App would like to spam you with notifications'),
+                      'Voluntary Spam App would like to spam you with notifications'),
                   actions: [
                     TextButton(
                         onPressed: () {
@@ -227,7 +227,7 @@ class _MyAppState extends State<MyApp> {
       });
     });
 
-    // FCM onForegorund Message Recieved
+    // FCM onForeground Message Received
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       messageHandler(message);
     });

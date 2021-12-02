@@ -367,7 +367,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
               ),
 
               Text(
-                'Catergories: '+cli.eventCategories.toString().replaceAll('[', '').replaceAll(']', ''),
+                'Categories: '+cli.eventCategories.toString().replaceAll('[', '').replaceAll(']', ''),
                 style: const TextStyle(
                     fontSize: 15,
                     color: Colors.grey,

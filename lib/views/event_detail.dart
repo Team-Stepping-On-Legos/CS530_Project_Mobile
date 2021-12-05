@@ -339,6 +339,7 @@ class _EventDetailState extends State<EventDetail> {
                 ? Padding(
                     padding: const EdgeInsets.only(
                         left: 5.0, right: 15.0, top: 10.0),
+
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -448,6 +449,7 @@ class _EventDetailState extends State<EventDetail> {
                             .replaceAll('[', '')
                             .replaceAll(']', '')
                         : 'Uncat',
+
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.grey,

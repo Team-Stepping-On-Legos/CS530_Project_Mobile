@@ -19,6 +19,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+
 
 /// Class defines a view for HomeScreen
 class HomeScreen extends StatefulWidget {
@@ -395,6 +397,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onTap: () {
             HapticFeedback.heavyImpact();
             exit(0);
+            //_awesomeMessage();
           },
           child: const HomeCardWidget(assetName: 'exit', name: 'EXIT\nAPP'),
         ),

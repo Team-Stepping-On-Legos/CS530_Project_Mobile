@@ -354,7 +354,11 @@ class _CalendarState extends State<Calendar> {
                   letterSpacing: 1.0,
                 ),
               ),
+
+              
               const SizedBox(height: 5.0),
+              
+              
               Text(
                 "$_dateText",
                 style: const TextStyle(

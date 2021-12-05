@@ -16,13 +16,14 @@ import 'controllers/api.dart';
 import 'controllers/utils.dart';
 import 'models/calendar_item.dart';
 
-/// Main Class
+
+// Main Class
 void main() async {
-  // Ensure intialization of Firbase
+  // Ensure initialization of Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp()
       // .whenComplete(() {
-      //   print("Completed intializing Firebase Core");
+      //   print("Completed initializing Firebase Core");
       // })
       ;
 
@@ -67,7 +68,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // calling `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
 
-  // print("Handling a background message: ${message.messageId}");
+  print("Handling a background message: ${message.messageId}");
 
   // calling customized message handler
   messageHandler(message);
@@ -76,7 +77,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // Customized Message Handler
 messageHandler(RemoteMessage message) async {
     // Print Message
-      // print("message recieved ${message.data}");
+      print("message received ${message.data}");
 
       // Read list of muted events stored in local file
       List<dynamic> _mutedEventsList = [];
@@ -86,14 +87,14 @@ messageHandler(RemoteMessage message) async {
         }
       });
 
-      // Initalize mute boolean
+      // Initialize mute boolean
       bool muteNotification = false;
       // If muted events present check condition to change state of mute boolean
       if (_mutedEventsList.isNotEmpty) {
         _mutedEventsList.forEach((mci) => {
               if (message.data['eventId'] == (mci.toString()))
                 {
-                  // print('THIS MESSAGE SHOULD MUTE ITSELF'),
+                  print('THIS MESSAGE SHOULD MUTE ITSELF'),
                   muteNotification = true
                 }
             });
@@ -147,7 +148,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // State Intialization
+
+  // State Initialization
   @override
   void initState() {
     super.initState();
@@ -160,7 +162,7 @@ class _MyAppState extends State<MyApp> {
             builder: (context) => AlertDialog(
                   title: const Text('Allow Notifications'),
                   content: const Text(
-                      'Volutary Spam App would like to spam you with notifications'),
+                      'Voluntary Spam App would like to spam you with notifications'),
                   actions: [
                     TextButton(
                         onPressed: () {
@@ -227,7 +229,8 @@ class _MyAppState extends State<MyApp> {
       });
     });
 
-    // FCM onForegorund Message Recieved
+    
+    // FCM onForegorund Message Received
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       messageHandler(message);
     });

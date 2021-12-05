@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cs530_mobile/views/event_detail.dart';
 import 'package:cs530_mobile/views/splash.dart';
 import 'package:cs530_mobile/views/upcoming_events.dart';
@@ -10,7 +9,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:lottie/lottie.dart';
 
 import 'controllers/api.dart';
 import 'controllers/utils.dart';
@@ -18,7 +16,7 @@ import 'models/calendar_item.dart';
 
 /// Main Class
 void main() async {
-  // Ensure intialization of Firbase
+  // Ensure initialization of Firbase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp()
       // .whenComplete(() {
@@ -76,7 +74,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // Customized Message Handler
 messageHandler(RemoteMessage message) async {
     // Print Message
-      // print("message recieved ${message.data}");
+      // print("message received ${message.data}");
 
       // Read list of muted events stored in local file
       List<dynamic> _mutedEventsList = [];

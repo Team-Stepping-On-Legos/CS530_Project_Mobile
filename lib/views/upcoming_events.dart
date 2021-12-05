@@ -372,7 +372,7 @@ class _CalendarState extends State<Calendar> {
                 ),
               ),
               Text(
-                'Catergories: ' +
+                'Categories: ' +
                     cli.eventCategories
                         .toString()
                         .replaceAll('[', '')

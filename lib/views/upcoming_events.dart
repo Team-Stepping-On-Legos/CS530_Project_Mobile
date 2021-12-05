@@ -1,50 +1,49 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cs530_mobile/controllers/api.dart';
 import 'package:cs530_mobile/controllers/custom_page_route.dart';
 import 'package:cs530_mobile/controllers/utils.dart';
 import 'package:cs530_mobile/models/calendar_item.dart';
-import 'package:cs530_mobile/views/calendar.dart';
 import 'package:cs530_mobile/views/event_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class UpcomingViewCalendar extends StatefulWidget {
+/// Class defines a view for Calendar
+class Calendar extends StatefulWidget {
   final String subscribedCategories;
 
-  const UpcomingViewCalendar({Key? key, required this.subscribedCategories})
+  const Calendar({Key? key, required this.subscribedCategories})
       : super(key: key);
 
   @override
-  _UpcomingViewCalendarState createState() => _UpcomingViewCalendarState();
+  _CalendarState createState() => _CalendarState();
 }
 
-class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
+/// Private Class for Calendar State
+class _CalendarState extends State<Calendar> {
   bool _downloadCalendarItemsDataCheck = true;
   List<CalendarItem> _calendarItemsList = [];
   List<dynamic> _mutedEventsList = [];
   bool isMuted = false;
 
+  /// Private async method to get all calendar items
   Future<void> _getCalendarItems() async {
     return API.getCalendarItems(widget.subscribedCategories).then((response) {
       setState(() {
         Iterable list = json.decode(response.body);
         _calendarItemsList =
             list.map((model) => CalendarItem.fromJson(model)).toList();
-            // print("${widget.subscribedCategories}, ${_calendarItemsList.length} IS THE CALENDAR ITEMS LENGTH");
       });
     });
   }
 
+  // initState
   @override
   void initState() {
     super.initState();
@@ -56,6 +55,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
         });
   }
 
+  /// Private async method to call to get all muted events from local file
   _getMutedEvents() async {
     readContent("mutedevents").then((String? value) {
       setState(() {
@@ -66,6 +66,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
     });
   }
 
+  // build method
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -125,6 +126,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                 ),
               ),
             ),
+            // SyncFusion Calendar
             SfCalendar(
               headerStyle: const CalendarHeaderStyle(
                   textStyle: TextStyle(
@@ -135,7 +137,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                   backgroundColor: Colors.transparent),
               backgroundColor: Colors.transparent,
               dataSource: _getCalendarDataSource(_calendarItemsList),
-              onTap: calendarTapped,
+              onTap: _calendarTapped,
               view: CalendarView.schedule,
               monthViewSettings: const MonthViewSettings(showAgenda: true),
               scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
@@ -194,6 +196,8 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
     );
   }
 
+  /// Private method to get month names to print in view
+  /// Takes argumnet [m] as month name
   String _getMonthDate(int m) {
     switch (m) {
       case 1:
@@ -260,7 +264,10 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
       _timeDetails = '';
   CalendarItem cli = CalendarItem();
 
-  void calendarTapped(CalendarTapDetails details) {
+  /// Private method to define what happens what event is tapped
+  void _calendarTapped(CalendarTapDetails details) {
+
+    // Set data struct
     if (details.targetElement == CalendarElement.appointment ||
         details.targetElement == CalendarElement.agenda) {
       final Appointment appointmentDetails = details.appointments![0];
@@ -281,7 +288,8 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
 
       _apptDescription = appointmentDetails.notes ?? '';
       cli.description = appointmentDetails.notes ?? '';
-      cli.eventCategories = appointmentDetails.resourceIds as List<String>? ?? ['Uncat'];
+      cli.eventCategories =
+          appointmentDetails.resourceIds as List<String>? ?? ['Uncat'];
       cli.startTime = appointmentDetails.startTime;
       cli.endTime = appointmentDetails.endTime;
       cli.title = appointmentDetails.subject;
@@ -299,6 +307,8 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
       } else {
         _timeDetails = '$_startTimeText - $_endTimeText';
       }
+
+      // Show Pop-Up with event detail also selection to open or mute
       showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) => CupertinoActionSheet(
@@ -344,11 +354,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                   letterSpacing: 1.0,
                 ),
               ),
-
-              
               const SizedBox(height: 5.0),
-              
-              
               Text(
                 "$_dateText",
                 style: const TextStyle(
@@ -365,18 +371,20 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
                   letterSpacing: 1.0,
                 ),
               ),
-
               Text(
-                'Catergories: '+cli.eventCategories.toString().replaceAll('[', '').replaceAll(']', ''),
+                'Catergories: ' +
+                    cli.eventCategories
+                        .toString()
+                        .replaceAll('[', '')
+                        .replaceAll(']', ''),
                 style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey,
-                    letterSpacing: 1.0,),
+                  fontSize: 15,
+                  color: Colors.grey,
+                  letterSpacing: 1.0,
+                ),
               ),
             ],
           ),
-
-          // message: const Text('Message'),
           actions: <CupertinoActionSheetAction>[
             CupertinoActionSheetAction(
               child: const Text('Open'),
@@ -426,6 +434,7 @@ class _UpcomingViewCalendarState extends State<UpcomingViewCalendar> {
   }
 }
 
+// SyncFusion Datasource settings for calendar item
 class DataSource extends CalendarDataSource {
   DataSource(List<Appointment> source) {
     appointments = source;
@@ -454,11 +463,11 @@ DataSource _getCalendarDataSource(List<CalendarItem> _calendarItemsList) {
   return DataSource(appointments);
 }
 
+/// Private method to get local time from UTC
+/// Takes argument [dt] as UTC time returned from web app
 DateTime _getLocalTime(DateTime dt) {
   var dateUtc = dt;
   var strToDateTime = DateTime.parse(dateUtc.toString());
   final convertLocal = strToDateTime.toLocal();
-  // var newFormat = DateFormat("MMM dd, yyyy hh:mm aaa");
-  // String dateLocal = newFormat.format(convertLocal);
   return convertLocal;
 }

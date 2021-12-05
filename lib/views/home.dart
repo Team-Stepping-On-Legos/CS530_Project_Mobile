@@ -20,6 +20,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+/// Class defines a view for HomeScreen
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -27,34 +28,41 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+/// Private Class for HomeScreen State
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
- 
+  // vars
   bool _isOpen = false;
   bool isDoneFindingConnection = true;
   bool downloadCategoriesCheck = true;
+  // anim controller
   late AnimationController _animationController;
 
   // Online Connectivity Initialization
   final Connectivity _connectivity = Connectivity();
+  // Stream for connectivity
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   // Initialize a variable with [none] status to avoid nulls at startup
   ConnectivityResult _connectivityResult = ConnectivityResult.none;
 
-  // Future for connectivity
+  /// Private async method to updated status if connected to internet or not
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    // update state
     setState(() {
       _connectivityResult = result;
+
+      // if not connected show dialog no connection
       if (!(_connectivityResult == ConnectivityResult.mobile ||
           _connectivityResult == ConnectivityResult.wifi)) {
-        showConnectivityDialog();
+        _showConnectivityDialog();
       }
+      // if connected get saved categories
       if (_connectivityResult == ConnectivityResult.mobile ||
           _connectivityResult == ConnectivityResult.wifi) {
         if (_isOpen) {
           Navigator.of(context, rootNavigator: true).pop();
           _getSavedCategories();
-
+          // update state once got categories
           _getCategories().then((_) => setState(() {
                 downloadCategoriesCheck = false;
               }));
@@ -63,14 +71,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-
-  Future<void> isConnected() async {
+  /// Private async method to get is connected to internet status
+  Future<void> _isConnected() async {
     // Online Connectivity Initialization
     _connectivityResult = await (Connectivity().checkConnectivity());
     if (!(_connectivityResult == ConnectivityResult.mobile ||
         _connectivityResult == ConnectivityResult.wifi)) {
       downloadCategoriesCheck = true;
-      showConnectivityDialog();
+      _showConnectivityDialog();
     } else {
       setState(() {
         isDoneFindingConnection = false;
@@ -84,20 +92,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  // initState
   @override
   initState() {
     _isOpen = false;
-    // CONNCETIVITY
+    // Connectivity
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-
+    // Anim Controller
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000));
-
-    isConnected();
+    // Call to check is connected at initializing state
+    _isConnected();
     super.initState();
   }
 
+  // overridign dispose to dispose stream
   @override
   dispose() {
     if (_connectivitySubscription != null) {
@@ -107,9 +117,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // vars
   List<Category> categoryList = [];
-  List<dynamic> readCategoryList = [];
+  List<dynamic> savedCategoryList = [];
 
+  /// Private async method for calling a get categories from endpoint and updating current state of category list
   Future<void> _getCategories() async {
     return API.getCategories().then((response) {
       setState(() {
@@ -119,16 +131,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  /// Private method for calling a get saved categories from local file and updating current state of saved category list
   _getSavedCategories() {
     readContent("categories").then((String? value) {
       setState(() {
         if (value != null) {
-          readCategoryList = jsonDecode(value);
+          savedCategoryList = jsonDecode(value);
         }
       });
     });
   }
 
+  /// Private method for showing a dialog to subscribe, save categories
   _showDialogCategories() {
     showDialog(
         context: context,
@@ -136,12 +150,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         barrierColor: Colors.deepPurple.withAlpha(20),
         builder: (BuildContext context) {
           List<String> selectedCategoryList = [];
-          if (readCategoryList.isNotEmpty) {
-            for (var element in readCategoryList) {
+          if (savedCategoryList.isNotEmpty) {
+            for (var element in savedCategoryList) {
               selectedCategoryList.add(element);
             }
           }
-          //Here we will build the content of the dialog
+          // content of the dialog
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
@@ -178,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                           MultiSelectChip(
                             categoryList,
-                            readCategoryList,
+                            savedCategoryList,
                             onSelectionChanged: (selectedList) {
                               setState(() {
                                 selectedCategoryList = selectedList;
@@ -187,7 +201,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                         ],
                       )
-                    : Lottie.asset(
+                    :
+                    // 404 animation if list of cats returned is empty for some reason
+                    Lottie.asset(
                         'assets/404.json',
                         repeat: true,
                         reverse: true,
@@ -207,13 +223,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       controller: _animationController,
                     ),
                     onPressed: () async {
-                      FBM fbm = FBM();
-                      // for (var item in categoryList) {
-                      //   fbm.unSubscribeTopic(item.name);
-                      // }
-                      // fbm.subscribeTopics(selectedCategoryList);
+                      FCM fbm = FCM();
                       await writeContent("categories", selectedCategoryList);
-
                       _animationController.forward();
                       await Future.delayed(const Duration(seconds: 2), () {});
                       _animationController.reverse();
@@ -227,6 +238,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         });
   }
 
+  // build method for HomeScreen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               snap: false,
               floating: false,
               elevation: 0,
-              expandedHeight: MediaQuery.of(context).size.height/3.6,
+              expandedHeight: MediaQuery.of(context).size.height / 3.6,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 titlePadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -291,6 +303,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  /// Private method for the bottom part of home screen view
   Widget _getBottomAppBar() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -319,6 +332,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  /// Private method for grid view of four card buttons of other pages
   GridView _getGridView() {
     return GridView.count(
       childAspectRatio: 2 / 2,
@@ -327,73 +341,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       mainAxisSpacing: 1,
       crossAxisCount: 2,
       children: <Widget>[
-        // NOTIFICATION HISTORY
+        // NOTIFICATION HISTORY BUTTON
+        // Navigate to notification history page
         GestureDetector(
           onTap: () {
             HapticFeedback.heavyImpact();
-            //Here we will build the content of the dialog
             Navigator.push(
                 context,
-                // MaterialPageRoute(builder: (context) => EventDetail(cli,isMuted)));
-                CustomPageRoute(NotificationHistory(
-                  subscribedCategories:
-                      getListAsCommaSepratedString(readCategoryList, "Uncat"),                      
-                ),""));
+                CustomPageRoute(
+                    NotificationHistory(
+                      subscribedCategories: getListAsCommaSepratedString(
+                          savedCategoryList, "Uncat"),
+                    ),
+                    ""));
           },
           child: const HomeCardWidget(
             assetName: 'upcoming',
             name: 'NOTIFICATION\nHISTORY',
           ),
         ),
-        // UPCOMING EVENTS
+        // UPCOMING EVENTS BUTTON
+        // Navigate to events page
         GestureDetector(
           onTap: () {
             HapticFeedback.heavyImpact();
-            //   showDialog(
-            //       context: context,
-            //       builder: (BuildContext context) {
-            //         //Here we will build the content of the dialog
-            //         return AlertDialog(
-            //           title: const Text("UPCOMING EVENTS"),
-            //           content: Lottie.asset(
-            //             'assets/404.json',
-            //             repeat: true,
-            //             reverse: true,
-            //             animate: true,
-            //             height: 120,
-            //             width: 120,
-            //           ),
-            //           actions: <Widget>[
-            //             TextButton(
-            //               child: const Text("OK"),
-            //               onPressed: () async {
-            //                 Navigator.of(context).pop();
-            //               },
-            //             )
-            //           ],
-            //         );
-            //       });
-            // }
-
             Navigator.push(
                 context,
-                CustomPageRoute(UpcomingViewCalendar(
-                  subscribedCategories:
-                      getListAsCommaSepratedString(readCategoryList, "Uncat"),
-                ),""));
-
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => UpcomingViewCalendar(
-            //       subscribedCategories: _getSavedCategoriesAsString(),
-            //     )));
+                CustomPageRoute(
+                    Calendar(
+                      subscribedCategories: getListAsCommaSepratedString(
+                          savedCategoryList, "Uncat"),
+                    ),
+                    ""));
           },
           child: const HomeCardWidget(
             assetName: 'marking_calendar',
             name: 'EVENTS\nCALENDAR',
           ),
         ),
-        // GET NOTIFIED
+        // GET NOTIFIED BUTTON
+        // Navigate to get notified dialog for subscribing categories
         GestureDetector(
           onTap: () {
             HapticFeedback.heavyImpact();
@@ -402,7 +389,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: const HomeCardWidget(
               assetName: 'get_notified', name: 'GET\nNOTIFIED'),
         ),
-        // EXIT
+        // EXIT BUTTON
+        // Exit the app
         GestureDetector(
           onTap: () {
             HapticFeedback.heavyImpact();
@@ -410,23 +398,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           },
           child: const HomeCardWidget(assetName: 'exit', name: 'EXIT\nAPP'),
         ),
-
-        // ALL EVENTS
-        // GestureDetector(
-        //   onTap: () {
-        //     Navigator.of(context).push(MaterialPageRoute(
-        //         builder: (context) => CalendarPage(
-        //               subscribedCategories: _getSavedCategoriesAsString(),
-        //             )));
-        //   },
-        //   child: const HomeCardWidget(
-        //       assetName: 'upcoming', name: 'ALL\nEVENTS'),
-        // ),
       ],
     );
   }
 
-  showConnectivityDialog() {
+  /// Private method to show undismissible dialog if internet is not connected to ensure app is not usable
+  _showConnectivityDialog() {
     setState(() {
       _isOpen = true;
     });
@@ -458,6 +435,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 }
 
+// Class for Categories multi chip bubble style selection
 class MultiSelectChip extends StatefulWidget {
   final List<Category> categoryList;
   final List<dynamic> readCategoryList;

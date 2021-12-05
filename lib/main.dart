@@ -16,7 +16,7 @@ import 'controllers/api.dart';
 import 'controllers/utils.dart';
 import 'models/calendar_item.dart';
 
-// Main Class
+/// Main Class
 void main() async {
   // Ensure intialization of Firbase
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +67,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // calling `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
 
-  print("Handling a background message: ${message.messageId}");
+  // print("Handling a background message: ${message.messageId}");
 
   // calling customized message handler
   messageHandler(message);
@@ -76,7 +76,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // Customized Message Handler
 messageHandler(RemoteMessage message) async {
     // Print Message
-      print("message recieved ${message.data}");
+      // print("message recieved ${message.data}");
 
       // Read list of muted events stored in local file
       List<dynamic> _mutedEventsList = [];
@@ -93,7 +93,7 @@ messageHandler(RemoteMessage message) async {
         _mutedEventsList.forEach((mci) => {
               if (message.data['eventId'] == (mci.toString()))
                 {
-                  print('THIS MESSAGE SHOULD MUTE ITSELF'),
+                  // print('THIS MESSAGE SHOULD MUTE ITSELF'),
                   muteNotification = true
                 }
             });
@@ -218,7 +218,7 @@ class _MyAppState extends State<MyApp> {
           readContent("categories").then((String? value) {
             List<dynamic> readCategoryList = jsonDecode(value ?? '');
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UpcomingViewCalendar(
+                builder: (context) => Calendar(
                       subscribedCategories: getListAsCommaSepratedString(
                           readCategoryList, "Uncat"),
                     )));
@@ -231,11 +231,6 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       messageHandler(message);
     });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Notification Message is clicked');
-      print('Message clicked!');
-    });
   }
 
   // To dispose the active stream of awesome notifications
@@ -244,7 +239,8 @@ class _MyAppState extends State<MyApp> {
     AwesomeNotifications().actionSink.close();
     super.dispose();
   }
-
+  
+  // build method returns splash screen
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

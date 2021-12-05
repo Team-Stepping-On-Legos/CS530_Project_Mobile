@@ -1,3 +1,5 @@
+
+/// Data Class Category for category data returned from web app
 class Category {
   String id;
   String name;

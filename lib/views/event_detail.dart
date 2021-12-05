@@ -15,37 +15,54 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
+/// Class EventDetail defines a Detail View of Event
 class EventDetail extends StatefulWidget {
+  // Each event detail page must contain a calendar item and muted status
   final CalendarItem calendarItem;
   final bool isMuted;
-
+  // constructor
   const EventDetail(this.calendarItem, this.isMuted, {Key? key})
       : super(key: key);
-
+  // create state
   @override
   _EventDetailState createState() => _EventDetailState();
 }
 
+/// Private Class for Event Detail State
 class _EventDetailState extends State<EventDetail> {
+  // private bool to check download status
   bool _downloadNotificationDataCheck = true;
+  // private List will contain all notification history data
   List<NotificationHistoryData> _notificationHistoryList = [];
+  // private List will contain notification history data specific to single event
   List<NotificationHistoryData> _eventSpecificNotificationHistoryList = [];
-  String subscribedCats = '';
+  // private Comma Separated subscribed categories to pass
+  String _subscribedCats = '';
+  // private bool to figure out if event is onGoing
+  late bool _onGoing;
 
+  /// private method to do a async call to get notification history of event
   Future<void> _getNotificationHistory() async {
+    // read the categories file to get subscribed categories
     await readContent("categories").then((String? value) {
       List<dynamic> readCategoryList = jsonDecode(value ?? '');
-      subscribedCats = getListAsCommaSepratedString(readCategoryList, "Uncat");
+      _subscribedCats = getListAsCommaSepratedString(readCategoryList, "Uncat");
     });
 
-    return API.getNotificationHistory(subscribedCats).then((response) {
+    // Call to get notifiaction history from web app
+    return API.getNotificationHistory(_subscribedCats).then((response) {
+      // Update the state of vars
       setState(() {
+        // Decode the json list returned from web app
         Iterable list = json.decode(response.body);
+        // Map returned data to _notificationHistoryList
         _notificationHistoryList = list
             .map((model) => NotificationHistoryData.fromJson(model))
             .toList();
+        // Update _eventSpecificNotificationHistoryList
         _eventSpecificNotificationHistoryList = [];
         for (var element in _notificationHistoryList) {
+          // if event id matches the current calendar item id then add it to event specific list
           if (element.eventId == widget.calendarItem.id) {
             _eventSpecificNotificationHistoryList.add(element);
           }
@@ -54,25 +71,31 @@ class _EventDetailState extends State<EventDetail> {
     });
   }
 
-  late bool _onGoing;
+  /// initState for event detail view
   @override
   void initState() {
+    // initialize onGoing to false
     _onGoing = false;
+    // call to initalize event specific notifiation history
     _getNotificationHistory().then((value) {
       setState(() {
+        // once completed update download bool so we can preview
         _downloadNotificationDataCheck = false;
       });
     });
     super.initState();
   }
 
+  /// build method for event detail view
   @override
   Widget build(BuildContext context) {
+    // Durations
     Duration _startDuration =
         widget.calendarItem.startTime!.difference(DateTime.now());
     Duration _endDuration =
         widget.calendarItem.endTime!.difference(DateTime.now());
 
+    // Count difference in days
     int _diffInDays(DateTime date1, DateTime date2) {
       return ((date1.difference(date2) -
                       Duration(hours: date1.hour) +
@@ -82,6 +105,7 @@ class _EventDetailState extends State<EventDetail> {
           .round();
     }
 
+    // Update onGoing status
     (DateTime.now().isAfter(widget.calendarItem.startTime!) &&
                 DateTime.now().isBefore(widget.calendarItem.endTime!)) ||
             ((_diffInDays(DateTime.now(), widget.calendarItem.startTime!) ==
@@ -91,8 +115,11 @@ class _EventDetailState extends State<EventDetail> {
         ? setState(() => {_onGoing = true})
         : setState(() => {_onGoing = false});
 
+    // return event detail view
     return ModalProgressHUD(
+      // progress dialog
       inAsyncCall: _downloadNotificationDataCheck,
+      // progress indicator to lottie loading.json file
       progressIndicator: Center(
         child: Lottie.asset(
           'assets/loading.json',
@@ -103,98 +130,54 @@ class _EventDetailState extends State<EventDetail> {
           width: MediaQuery.of(context).size.width - 10,
         ),
       ),
+      // scaffold
       child: Scaffold(
+          // appBar
           appBar: CupertinoNavigationBar(
             backgroundColor: Colors.deepPurple,
             leading: Material(
               color: Colors.deepPurple,
+              // back button
               child: IconButton(
                 color: Colors.white,
                 icon: const Icon(Icons.navigate_before_outlined),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
+            // title
             middle: const Text(
               'EVENT DETAIL',
               style: TextStyle(color: Colors.white),
             ),
           ),
+          // body
           body: SingleChildScrollView(
-            child: _startDuration.inMicroseconds.compareTo(DateTime.now()
-                            .difference(DateTime.now())
-                            .inMicroseconds) >
-                        0 &&
-                    _endDuration.inMicroseconds.compareTo(DateTime.now()
-                            .difference(DateTime.now())
-                            .inMicroseconds) >
-                        0
-                ? Column(
-                    children: [
-                      Hero(
-                        tag: 'HeroOne',
-                        child: Container(
-                          height: 25,
-                          decoration: BoxDecoration(
-                              color: Colors.indigo.withAlpha(150)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'UPCOMING EVENT',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  letterSpacing: 1.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      SizedBox(
-                        height: 64.0,
-                        child: FlipClock.reverseCountdown(
-                          duration: _startDuration,
-                          digitColor: Colors.white,
-                          //NOT WORKING
-                          onDone: () => {
-                            setState(() => {_onGoing = true}),
-                            print("ON DONE CALLED"),
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        super.widget))
-                          },
-                          backgroundColor: Colors.black87,
-                          digitSize: 30.0,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(3.0)),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _eventDetailView(context),
-                    ],
-                  )
-                : _onGoing
-                    ? Column(
+            child:
+                // condition to check the time duration
+                _startDuration.inMicroseconds.compareTo(DateTime.now()
+                                .difference(DateTime.now())
+                                .inMicroseconds) >
+                            0 &&
+                        _endDuration.inMicroseconds.compareTo(DateTime.now()
+                                .difference(DateTime.now())
+                                .inMicroseconds) >
+                            0
+                    ?
+                    // if future event return column
+                    Column(
                         children: [
+                          // Hero Animation on container with event status
                           Hero(
                             tag: 'HeroOne',
                             child: Container(
                               height: 25,
                               decoration: BoxDecoration(
-                                  color: Colors.green.withAlpha(150)),
+                                  color: Colors.indigo.withAlpha(150)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
                                   Text(
-                                    'ON-GOING EVENT',
+                                    'UPCOMING EVENT',
                                     style: TextStyle(
                                       fontSize: 12,
                                       letterSpacing: 1.0,
@@ -207,45 +190,98 @@ class _EventDetailState extends State<EventDetail> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          _eventDetailView(context)
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          Hero(
-                            tag: 'HeroOne',
-                            child: Container(
-                              height: 25,
-                              decoration: BoxDecoration(
-                                  color: Colors.red.withAlpha(150)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'PAST EVENT',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      letterSpacing: 1.0,
-                                      color: Colors.white.withOpacity(1.0),
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          // Flip clock with reverse count down
+                          SizedBox(
+                            height: 64.0,
+                            child: FlipClock.reverseCountdown(
+                              duration: _startDuration,
+                              digitColor: Colors.white,                              
+                              backgroundColor: Colors.black87,
+                              digitSize: 30.0,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(3.0)),
                             ),
                           ),
                           const SizedBox(height: 10),
-                          _eventDetailView(context)
+                          _eventDetailView(context),
                         ],
-                      ),
+                      )
+                    :
+                    // if not future event, check if it is onGoing 
+                    _onGoing
+                        ? 
+                        // if onGoing event return onGoing Column container with hero animation
+                        Column(
+                            children: [
+                              Hero(
+                                tag: 'HeroOne',
+                                child: Container(
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      color: Colors.green.withAlpha(150)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        'ON-GOING EVENT',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          letterSpacing: 1.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              _eventDetailView(context)
+                            ],
+                          )
+                        : 
+                        // if past event return past Column container with hero animation
+                        Column(
+                            children: [
+                              Hero(
+                                tag: 'HeroOne',
+                                child: Container(
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red.withAlpha(150)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'PAST EVENT',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          letterSpacing: 1.0,
+                                          color: Colors.white.withOpacity(1.0),
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              _eventDetailView(context)
+                            ],
+                          ),
           )),
     );
   }
 
+  /// private method returns common container for past, ongoing and future events
   Container _eventDetailView(BuildContext context) {
     return Container(
+      // take width and height of available screen
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
@@ -275,6 +311,7 @@ class _EventDetailState extends State<EventDetail> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Title
                   Text(
                     widget.calendarItem.title ?? 'TITLE',
                     style: const TextStyle(
@@ -282,6 +319,7 @@ class _EventDetailState extends State<EventDetail> {
                         letterSpacing: 1.0,
                         fontWeight: FontWeight.bold),
                   ),
+                  // IsMuted condition updates the image of muted or not
                   widget.isMuted
                       ? Image.asset(
                           'assets/notification_off.png',
@@ -296,10 +334,11 @@ class _EventDetailState extends State<EventDetail> {
             const SizedBox(
               height: 10,
             ),
+            // If Event is not all day print start and end date time else print all day
             widget.calendarItem.isAllDay!
                 ? Padding(
-                    padding:
-                        const EdgeInsets.only(left: 5.0, right: 15.0, top: 10.0),
+                    padding: const EdgeInsets.only(
+                        left: 5.0, right: 15.0, top: 10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -388,6 +427,7 @@ class _EventDetailState extends State<EventDetail> {
             const SizedBox(
               height: 15,
             ),
+            // Categories
             Padding(
               padding: const EdgeInsets.only(left: 5.0, right: 15.0, top: 10.0),
               child: Row(
@@ -402,11 +442,12 @@ class _EventDetailState extends State<EventDetail> {
                         fontWeight: FontWeight.w800),
                   ),
                   Text(
-                    widget.calendarItem.eventCategories != null ?
-                    widget.calendarItem.eventCategories
-                        .toString()
-                        .replaceAll('[', '')
-                        .replaceAll(']', ''): 'Uncat',
+                    widget.calendarItem.eventCategories != null
+                        ? widget.calendarItem.eventCategories
+                            .toString()
+                            .replaceAll('[', '')
+                            .replaceAll(']', '')
+                        : 'Uncat',
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.grey,
@@ -419,6 +460,7 @@ class _EventDetailState extends State<EventDetail> {
             const SizedBox(
               height: 25,
             ),
+            // Description
             Padding(
               padding: const EdgeInsets.only(left: 5.0),
               child: Column(
@@ -452,6 +494,7 @@ class _EventDetailState extends State<EventDetail> {
             const SizedBox(
               height: 10,
             ),
+            // Notification History
             const Center(
               child: Text(
                 'NOTIFICATION HISTORY',

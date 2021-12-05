@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'calendar_item.g.dart';
 
+/// Data Class CalendarItem for calendar event data returned from web app
 @JsonSerializable()
 class CalendarItem {
 	String? id;

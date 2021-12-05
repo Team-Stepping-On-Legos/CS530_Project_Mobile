@@ -11,9 +11,11 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
+/// Class defines a view for Notfication History
 class NotificationHistory extends StatefulWidget {
   final String subscribedCategories;
-
+  /// Constructor for Notification History
+  /// Takes argument [subscribedCategories] as comma separated string
   const NotificationHistory({required this.subscribedCategories, Key? key})
       : super(key: key);
 
@@ -21,10 +23,12 @@ class NotificationHistory extends StatefulWidget {
   _NotificationHistoryState createState() => _NotificationHistoryState();
 }
 
+/// Private Class for Notfication History State
 class _NotificationHistoryState extends State<NotificationHistory> {
   bool _downloadNotificationDataCheck = true;
   List<NotificationHistoryData> _notificationHistoryList = [];
 
+  /// Private method to get all notification history of subscribed categories
   Future<void> _getNotificationHistory() async {
     return API
         .getNotificationHistory(widget.subscribedCategories)
@@ -38,16 +42,18 @@ class _NotificationHistoryState extends State<NotificationHistory> {
     });
   }
 
+  // initState
   @override
   void initState() {
-    super.initState();
     _getNotificationHistory().then((value) {
       setState(() {
         _downloadNotificationDataCheck = false;
       });
     });
+    super.initState();
   }
 
+  // build method for Notification History
   @override
   Widget build(BuildContext context) {
     double _w = MediaQuery.of(context).size.width;

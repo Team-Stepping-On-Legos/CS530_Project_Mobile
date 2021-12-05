@@ -2,6 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+/// Class defines Home Screen Top View Widget 
 class HomeTopViewWidget extends StatelessWidget {
   const HomeTopViewWidget({
     Key? key,

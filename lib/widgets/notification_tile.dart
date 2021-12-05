@@ -1,15 +1,15 @@
 import 'package:cs530_mobile/models/notification_history_data.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
+/// Class defines Notification Card Tile Widget List for Notification History View
 class NotificationTile extends StatelessWidget {
-  NotificationHistoryData ntData;
-  int n;
+  final NotificationHistoryData ntData;
+  final int n;
 
-  NotificationTile(this.ntData, this.n, {Key? key}) : super(key: key);
+  const NotificationTile(this.ntData, this.n, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +22,12 @@ class NotificationTile extends StatelessWidget {
 
     return AnimationConfiguration.staggeredList(
       position: n,
-      delay: const Duration(milliseconds: 20),
+      delay: const Duration(milliseconds: 5),
       child: ScaleAnimation(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInCubic,
         child: SlideAnimation(
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 200),
           horizontalOffset: -300,
           verticalOffset: -250,
           curve: Curves.easeInCubic,

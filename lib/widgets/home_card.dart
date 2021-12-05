@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+/// Class defines Home Screen Menu Card Widget 
 class HomeCardWidget extends StatelessWidget {
   final String assetName, name;
   const HomeCardWidget({

@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+/// Class defines a view for users without a firebase id to create one
 class GetStarted extends StatefulWidget {
   const GetStarted({Key? key}) : super(key: key);
 
@@ -14,30 +15,38 @@ class GetStarted extends StatefulWidget {
   _GetStartedState createState() => _GetStartedState();
 }
 
+/// Private class for GetStarted state
 class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
+
+  // initState
   @override
   void initState() {
-    super.initState();
+    // Set anim controller
     _bc = AnimationController(
       duration: const Duration(seconds: 7),
       vsync: this,
     )..repeat();
     ba = CurvedAnimation(parent: _bc, curve: Curves.easeIn);
+    super.initState();
   }
 
+  // Animation vars
   late Animation<double> ba;
-
   late AnimationController _bc;
-
+  // Firebase Auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // Get current User
   var _user = FirebaseAuth.instance.currentUser;
 
+  // build method for GetStarted
   @override
   Widget build(BuildContext context) {
     double _w = MediaQuery.of(context).size.width;
     double _h = MediaQuery.of(context).size.height;
     const color = Colors.white;
-    return _user == null
+    return 
+    // Condition to check if user is null then return Get Started Else route to home
+    _user == null
         ? Scaffold(
             body: Container(
             width: _w,
@@ -120,7 +129,8 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
                   Center(
                       child: TextButton(
                     onPressed: () {
-                      signInAnonymously();
+                      // call method to create a firebase account
+                      _signInAnonymously();
                     },
                     child: Text(
                       "Get Started".toUpperCase(),
@@ -135,21 +145,27 @@ class _GetStartedState extends State<GetStarted> with TickerProviderStateMixin {
               ),
             ),
           ))
-        : const HomeScreen();
+        :
+        // route to home screen if logged in user is not null 
+        const HomeScreen();
   }
 
+  // overriding dispose to dispose anim controller
   @override
   void dispose() {
     _bc.dispose();
     super.dispose();
   }
 
-  void signInAnonymously() {
+  // private method to create anonymous firebase account
+  void _signInAnonymously() {
     _auth.signInAnonymously().then((result) {
+      // Update user state to route to homeScreen
       setState(() {
         _user = result.user;
       });
-      FBM fbm = FBM();
+      // subscribe to "Uncat" always which is the topic used by web app to send notifications
+      FCM fbm = FCM();
       fbm.subscribeTopic("Uncat");
     });
   }

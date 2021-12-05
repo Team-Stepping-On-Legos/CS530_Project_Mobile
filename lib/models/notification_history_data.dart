@@ -1,3 +1,4 @@
+/// Data Class NotificationHistoryData for Notification History data returned from web app
 class NotificationHistoryData{
   String? eventId;
   String time;

@@ -1,13 +1,14 @@
 import 'dart:async';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cs530_mobile/views/get_started.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+/// Class defines a view for Splash Screen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -15,14 +16,12 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
+/// Private Class for Splash Screen State
 class _SplashScreenState extends State<SplashScreen> {
-
-
-
   @override
   void initState() {
     super.initState();
-
+    // Make app it portrait only
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

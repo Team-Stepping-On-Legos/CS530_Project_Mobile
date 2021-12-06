@@ -8,7 +8,10 @@
 .buildlog/
 .history
 .svn/
+
+# Firebase files
 /android/app/google-services.json
+/ios/GoogleService-Info.plist
 
 # IntelliJ related
 *.iml

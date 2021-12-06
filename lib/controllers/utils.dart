@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 /// Private method to get local path
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
-  print(directory.path);
+  // print(directory.path);
   return directory.path;
 }
 
